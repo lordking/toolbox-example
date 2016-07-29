@@ -1,0 +1,10 @@
+{
+	"adapter": "mysql",
+	"host": "127.0.0.1",
+	"port":"3306",
+	"username":"root",
+	"password":"gfound123$",
+  "MaxOpenConns":200,
+  "MaxIdleConns":100,
+	"database": "webseed"
+}
