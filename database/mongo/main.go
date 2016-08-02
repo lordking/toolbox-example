@@ -16,7 +16,8 @@ func init() {
 }
 
 func main() {
-	//创建一个全景的数据库访问单例
+
+	//创建一个数据库访问单例
 	mongo := mongo.New()
 	err := database.CreateInstance(mongo, "./mongo.json")
 	defer common.CheckFatal(err)
