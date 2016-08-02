@@ -16,7 +16,7 @@ func init() {
 func main() {
 	//创建一个全景的数据库访问单例
 	mysql := mysql.New()
-	err := database.CreateInstance(mysql, "./db.json")
+	err := database.CreateInstance(mysql, "./mysql.json")
 	defer common.CheckFatal(err)
 
 	p := &Person{
