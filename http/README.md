@@ -170,7 +170,7 @@ ssl_cert和ssl_key的生成方式是：
 #### 3.2.1 创建数据库和表
 
 ```sql
-CREATE DATABASE `webseed`
+CREATE DATABASE `sample`
 
 CREATE TABLE `person` (
   `name` varchar(255) NOT NULL,

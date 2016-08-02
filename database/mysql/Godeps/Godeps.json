@@ -1,0 +1,37 @@
+{
+	"ImportPath": "github.com/lordking/toolbox-example/database/mysql",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.10.0-21-g32055c3",
+			"Rev": "32055c351ea8b00b96d70f28db48d9840feaf0ec"
+		},
+		{
+			"ImportPath": "github.com/go-sql-driver/mysql",
+			"Comment": "v1.2-196-g3654d25",
+			"Rev": "3654d25ec346ee8ce71a68431025458d52a38ac0"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/common",
+			"Rev": "6d5f70fb040c3176f90f4ed93c319a2de605b24e"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/database",
+			"Rev": "6d5f70fb040c3176f90f4ed93c319a2de605b24e"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/database/mysql",
+			"Rev": "6d5f70fb040c3176f90f4ed93c319a2de605b24e"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/log",
+			"Rev": "6d5f70fb040c3176f90f4ed93c319a2de605b24e"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+		}
+	]
+}
