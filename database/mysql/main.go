@@ -20,21 +20,25 @@ func main() {
 	err := database.CreateInstance(mysql, "./mysql.json")
 	defer common.CheckFatal(err)
 
-	p := &Person{
+	form := &PersonForm{
 		Name:  "leking",
 		Phone: "18900000000",
 	}
 
+	p := &Person{}
+
 	//插入数据
-	p.Insert()
+
+	p.Insert(form)
 
 	//查询数据
-	p.FindAll(p.Name)
+	p.FindAll(form.Name)
 
 	//更新数据
-	p.UpdateAll(p.Name, "13900000")
+	form.Phone = "13900001111"
+	p.UpdateAll(form.Name, form)
 
 	//删除数据
-	p.RemoveAll(p.Name)
+	p.RemoveAll(form.Name)
 
 }

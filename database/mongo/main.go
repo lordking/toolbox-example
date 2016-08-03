@@ -22,20 +22,23 @@ func main() {
 	err := database.CreateInstance(mongo, "./mongo.json")
 	defer common.CheckFatal(err)
 
-	p := &Person{
+	form := &PersonForm{
 		Name:  "leking",
 		Phone: "18900000000",
 	}
 
+	p := &Person{}
+
 	//插入数据
-	p.insert()
+	p.insert(form)
 
 	//查询数据
-	p.findAll(p.Name)
+	p.findAll(form.Name)
 
 	//更新数据
-	p.updateAll(p.Name, "13900000")
+	form.Phone = "13900001111"
+	p.updateAll(form.Name, form)
 
 	//删除数据
-	p.removeAll(p.Name)
+	p.removeAll(form.Name)
 }

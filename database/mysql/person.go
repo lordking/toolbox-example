@@ -13,14 +13,18 @@ const (
 	collectionName = "person"
 )
 
-//Person 用户数据对象
-type Person struct {
-	Id    int
-	Name  string `json:"name" bson:"name"`
-	Phone string `json:"phone" bson:"phone"`
-}
+type (
+	Person struct{}
 
-func (p *Person) Insert() {
+	//Person 用户数据对象
+	PersonForm struct {
+		Id    int
+		Name  string `json:"name" bson:"name"`
+		Phone string `json:"phone" bson:"phone"`
+	}
+)
+
+func (p *Person) Insert(form *PersonForm) {
 
 	//获取单例
 	db := (database.Instance).(*mysql.MySQL)
@@ -34,7 +38,7 @@ func (p *Person) Insert() {
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
-	result, err := stmt.Exec(p.Name, p.Phone)
+	result, err := stmt.Exec(form.Name, form.Phone)
 	lastId, err := result.LastInsertId()
 	defer common.CheckFatal(err)
 
@@ -53,17 +57,17 @@ func (p *Person) FindAll(name string) {
 
 	connection := (db.GetConnection()).(*sql.DB)
 
-	var result []Person
+	var result []PersonForm
 	stmt, err := connection.Query("SELECT id, name, phone FROM person WHERE name = ?", name)
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
 	for stmt.Next() {
-		var person Person
-		err := stmt.Scan(&(person.Id), &(person.Name), &(person.Phone))
+		var form PersonForm
+		err := stmt.Scan(&(form.Id), &(form.Name), &(form.Phone))
 		defer common.CheckError(err)
 
-		result = append(result, person)
+		result = append(result, form)
 	}
 
 	log.Debug("Find result: %s", common.PrettyObject(result))
@@ -71,7 +75,7 @@ func (p *Person) FindAll(name string) {
 	db.Close()
 }
 
-func (p *Person) UpdateAll(name string, phone string) {
+func (p *Person) UpdateAll(name string, form *PersonForm) {
 
 	//获取单例
 	db := (database.Instance).(*mysql.MySQL)
@@ -85,7 +89,7 @@ func (p *Person) UpdateAll(name string, phone string) {
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
-	result, err := stmt.Exec(phone, name)
+	result, err := stmt.Exec(form.Phone, name)
 	rowsCount, err := result.RowsAffected()
 	defer common.CheckFatal(err)
 
