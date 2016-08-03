@@ -7,10 +7,6 @@ import (
 	"github.com/lordking/toolbox/log"
 )
 
-const (
-	collectionName = "person"
-)
-
 func init() {
 	log.SetLevel(log.DebugLevel)
 }

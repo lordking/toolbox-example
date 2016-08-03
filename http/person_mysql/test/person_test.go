@@ -7,12 +7,9 @@ package test
 import (
 	"testing"
 
-	ws "goutils"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
 )
-
-func init() {
-
-}
 
 func TestCreate(t *testing.T) {
 
@@ -23,15 +20,15 @@ func TestCreate(t *testing.T) {
 	  "phone":"025-216549778"
 	}`)
 
-	b, _ := ws.PrettyJSON(data)
+	b, _ := common.PrettyJSON(data)
 	t.Logf("Request: %s", b)
 
-	result, err := ws.RequestJSON("POST", url, data)
+	result, err := http.RequestJSON("POST", url, data)
 	if err != nil {
 		t.Error(err)
 	}
 
-	s, _ := ws.PrettyJSON(result)
+	s, _ := common.PrettyJSON(result)
 	t.Logf("Response: %s", s)
 
 }
@@ -40,12 +37,12 @@ func TestFind(t *testing.T) {
 
 	url := kHost + "/person/sunny"
 
-	result, err := ws.RequestJSON("GET", url, nil)
+	result, err := http.RequestJSON("GET", url, nil)
 	if err != nil {
 		t.Error(err)
 	}
 
-	s, _ := ws.PrettyJSON(result)
+	s, _ := common.PrettyJSON(result)
 	t.Logf("Response: %s", s)
 }
 
@@ -57,15 +54,15 @@ func TestUpdate(t *testing.T) {
 	  "phone":"025-216549779"
 	}`)
 
-	b, _ := ws.PrettyJSON(data)
+	b, _ := common.PrettyJSON(data)
 	t.Logf("Request: %s", b)
 
-	result, err := ws.RequestJSON("PUT", url, data)
+	result, err := http.RequestJSON("PUT", url, data)
 	if err != nil {
 		t.Error(err)
 	}
 
-	s, _ := ws.PrettyJSON(result)
+	s, _ := common.PrettyJSON(result)
 	t.Logf("Response: %s", s)
 
 }
@@ -74,12 +71,12 @@ func TestDelete(t *testing.T) {
 
 	url := kHost + "/person/delete/sunny"
 
-	result, err := ws.RequestJSON("DELETE", url, nil)
+	result, err := http.RequestJSON("DELETE", url, nil)
 	if err != nil {
 		t.Error(err)
 	}
 
-	s, _ := ws.PrettyJSON(result)
+	s, _ := common.PrettyJSON(result)
 	t.Logf("Response: %s", s)
 
 }

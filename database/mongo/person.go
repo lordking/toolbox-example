@@ -10,30 +10,34 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
+const (
+	collectionName = "person"
+)
+
 type (
 	Person struct{}
 
 	//Person 用户数据对象
-	PersonForm struct {
+	PersonVO struct {
 		Id    bson.ObjectId `json:"id" bson:"_id"`
 		Name  string        `json:"name" bson:"name"`
 		Phone string        `json:"phone" bson:"phone"`
 	}
 )
 
-func (p *Person) insert(form *PersonForm) {
+func (p *Person) insert(obj *PersonVO) {
 	//获取单例
 	db := (database.Instance).(*mongo.Mongo)
 
 	err := db.Connect()
 	defer common.CheckFatal(err)
 
-	form.Id = bson.NewObjectId()
+	obj.Id = bson.NewObjectId()
 	collection, err := db.GetCollection(collectionName)
-	err = collection.Insert(form)
+	err = collection.Insert(obj)
 	defer common.CheckError(err)
 
-	log.Debug("Insert result: %s", common.PrettyObject(form))
+	log.Debug("Insert result: %s", common.PrettyObject(obj))
 
 	db.Close()
 }
@@ -45,7 +49,7 @@ func (p *Person) findAll(name string) {
 	err := db.Connect()
 	defer common.CheckFatal(err)
 
-	var result []PersonForm
+	var result []PersonVO
 	collection, err := db.GetCollection(collectionName)
 	err = collection.Find(bson.M{"name": name}).All(&result)
 	defer common.CheckError(err)
@@ -55,7 +59,7 @@ func (p *Person) findAll(name string) {
 	db.Close()
 }
 
-func (p *Person) updateAll(name string, form *PersonForm) {
+func (p *Person) updateAll(name string, obj *PersonVO) {
 	//获取单例
 	db := (database.Instance).(*mongo.Mongo)
 
@@ -64,7 +68,7 @@ func (p *Person) updateAll(name string, form *PersonForm) {
 
 	var result *mgo.ChangeInfo
 	collection, err := db.GetCollection(collectionName)
-	result, err = collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": form.Phone}})
+	result, err = collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": obj.Phone}})
 	defer common.CheckError(err)
 
 	log.Debug("Update result: %s", common.PrettyObject(result))

@@ -1,28 +1,25 @@
 package main
 
 import (
-	ws "goutils"
-
 	"flag"
-	"os"
 	"reflect"
 	"time"
 
-	"goutils-example/webseed/welcome/benchmark/testcase"
+	"github.com/lordking/toolbox-example/http/welcome/benchmark/testcase"
+	"github.com/lordking/toolbox/log"
 )
 
 func init() {
-	ws.SetLogger(ws.DebugLevel)
+	log.SetLevel(log.DebugLevel)
 }
 
-var methodName = flag.String("m", "", "test case name")
-
 func main() {
+
+	methodName := flag.String("m", "", "test case name")
 	flag.Parse()
 
 	if *methodName == "" {
-		ws.LogError("Not found testcase!")
-		os.Exit(0)
+		log.Fatal("Not found testcase!")
 	}
 
 	s := &testcase.TestCase{}

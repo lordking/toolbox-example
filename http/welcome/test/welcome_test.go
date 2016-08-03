@@ -7,12 +7,9 @@ package test
 import (
 	"testing"
 
-	ws "goutils"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
 )
-
-func init() {
-
-}
 
 func TestHello(t *testing.T) {
 
@@ -25,15 +22,15 @@ func TestHello(t *testing.T) {
 	   }
 	}`)
 
-	b, _ := ws.PrettyJSON(data)
+	b, _ := common.PrettyJSON(data)
 	t.Logf("Request: %s", b)
 
-	result, err := ws.RequestJSON("POST", url, data)
+	result, err := http.RequestJSON("POST", url, data)
 	if err != nil {
 		t.Error(err)
 	}
 
-	s, _ := ws.PrettyJSON(result)
+	s, _ := common.PrettyJSON(result)
 	t.Logf("Response: %s", s)
 
 }

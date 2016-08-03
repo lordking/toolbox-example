@@ -2,14 +2,14 @@
 
 以最佳实践、极简方式提供HTTP服务的范例。
 
-## 1 样例说明
+## 1. 样例说明
 
 - welcome: 最基本的rest api样例
 - person_mongo: 使用mongodb作为数据库的rest api样例
 - person_mysql: 使用mysql作为数据库的restful样例
 - blog: 使用mongodb作为数据库、用rest api作为服务模型的WebApp样例
 
-## 2 安装及配置说明
+## 2. 安装及配置说明
 
 ### 2.1 安装go语言环境
 

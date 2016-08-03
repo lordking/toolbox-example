@@ -1,9 +1,10 @@
 package api
 
 import (
-	ws "goutils"
-
 	"github.com/gin-gonic/gin"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
+	"github.com/lordking/toolbox/log"
 )
 
 type (
@@ -11,7 +12,7 @@ type (
 	Welcome struct{}
 
 	//HelloForm 请求的json协议声明
-	HelloForm struct {
+	WelcomeForm struct {
 		Name    string                 `json:"name" binding:"required"`
 		Content map[string]interface{} `json:"content" binding:"required"`
 	}
@@ -20,12 +21,12 @@ type (
 //Hello rest服务范例
 func (w *Welcome) Hello(c *gin.Context) {
 
-	var json HelloForm
-	if c.BindJSON(&json) == nil {
-		ws.LogDebug("Request: %s", json)
+	var form WelcomeForm
+	if c.BindJSON(&form) == nil {
+		log.Debug("Request: %s", common.PrettyObject(form))
 
-		ws.JSONResponse(c, 200, gin.H{"hello": json.Name, "extra": json.Content})
+		http.JSONResponse(c, 200, gin.H{"hello": form.Name, "extra": form.Content})
 	} else {
-		ws.JSONResponse(c, 400, "failure to parse json string")
+		http.JSONResponse(c, 400, "failure to parse json string")
 	}
 }

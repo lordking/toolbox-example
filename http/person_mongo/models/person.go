@@ -1,75 +1,63 @@
 package models
 
 import (
-	"gopkg.in/mgo.v2"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database"
+	"github.com/lordking/toolbox/database/mongo"
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-
-	ws "goutils"
 )
 
-//Person 用户数据对象
-type Person struct {
-	Id    bson.ObjectId `json:"id" bson:"_id"`
-	Name  string        `json:"name" bson:"name"`
-	Phone string        `json:"phone" bson:"phone"`
-}
+const (
+	collectionName = "person"
+)
 
-//Create 创建用户
-func (p *Person) Create() error {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	personCollection, err := mongo.GetCollection("person")
-
-	if err != nil {
-		return ws.ToError(ws.ErrCodeInternal, err)
+type (
+	Person struct {
+		collection *mgo.Collection
 	}
 
-	//创建
-	p.Id = bson.NewObjectId() //生成id
-	err = personCollection.Insert(p)
+	//Person 用户数据对象
+	PersonVO struct {
+		Id    bson.ObjectId `json:"id" bson:"_id"`
+		Name  string        `json:"name" bson:"name"`
+		Phone string        `json:"phone" bson:"phone"`
+	}
+)
 
+//Create 创建用户
+func (p *Person) Create(obj *PersonVO) error {
+
+	obj.Id = bson.NewObjectId()
+
+	err := p.collection.Insert(obj)
 	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
 	return nil
 }
 
 //Find 查找用户
-func (p *Person) Find(name string) ([]Person, error) {
+func (p *Person) Find(name string) ([]PersonVO, error) {
 
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	personCollection, err := mongo.GetCollection("person")
+	var result []PersonVO
 
+	err := p.collection.Find(bson.M{"name": name}).All(&result)
 	if err != nil {
-		return nil, ws.ToError(ws.ErrCodeInternal, err)
-
-	}
-
-	//查询
-	var result []Person
-	err = personCollection.Find(bson.M{"name": name}).All(&result)
-
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodedParams, err)
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
 	return result, nil
 }
 
 //Update 更新用户
-func (p *Person) Update(name string) (*mgo.ChangeInfo, error) {
-
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	personCollection, err := mongo.GetCollection("person")
-
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodeInternal, err)
-	}
+func (p *Person) Update(name string, obj *PersonVO) (*mgo.ChangeInfo, error) {
 
 	//修改
-	result, err := personCollection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": p.Phone}})
+	result, err := p.collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": obj.Phone}})
 	if err != nil {
-		return nil, ws.ToError(ws.ErrCodedParams, err)
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
 	return result, nil
@@ -78,19 +66,28 @@ func (p *Person) Update(name string) (*mgo.ChangeInfo, error) {
 //Delete 删除用户
 func (p *Person) Delete(name string) (*mgo.ChangeInfo, error) {
 
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	personCollection, err := mongo.GetCollection("person")
-
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodeInternal, err)
-
-	}
-
 	//测试查询
-	result, err := personCollection.RemoveAll(bson.M{"name": name})
+	result, err := p.collection.RemoveAll(bson.M{"name": name})
 	if err != nil {
-		return nil, ws.ToError(ws.ErrCodedParams, err)
+		return nil, common.NewErrorWithOther(common.ErrCodedParams, err)
 	}
 
 	return result, nil
+}
+
+func NewPerson() (*Person, error) {
+
+	//获取单例
+	db := (database.Instance).(*mongo.Mongo)
+	err := db.Connect()
+	if err != nil {
+		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	collection, err := db.GetCollection(collectionName)
+	if err != nil {
+		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	return &Person{collection: collection}, err
 }
