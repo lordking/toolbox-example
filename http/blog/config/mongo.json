@@ -1,5 +1,5 @@
 {
 	"adapter": "mongo",
 	"url": "127.0.0.1",
-	"database": "webseed"
+	"database": "sample"
 }
