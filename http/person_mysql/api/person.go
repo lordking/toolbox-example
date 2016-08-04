@@ -118,10 +118,13 @@ func (p *Person) Delete(c *gin.Context) {
 func NewPerson() (*Person, error) {
 
 	model, err := models.NewPerson()
+	if err != nil {
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
 
 	ctrl := &Person{
 		model: model,
 	}
 
-	return ctrl, err
+	return ctrl, nil
 }

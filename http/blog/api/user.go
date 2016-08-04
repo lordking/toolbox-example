@@ -51,10 +51,13 @@ func (u *User) Login(c *gin.Context) {
 func NewUser() (*User, error) {
 
 	token, err := models.NewToken()
+	if err != nil {
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
 
 	ctrl := &User{
 		token: token,
 	}
 
-	return ctrl, err
+	return ctrl, nil
 }

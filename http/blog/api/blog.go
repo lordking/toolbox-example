@@ -122,10 +122,13 @@ func (b *Blog) Delete(c *gin.Context) {
 func NewBlog() (*Blog, error) {
 
 	model, err := models.NewBlog()
+	if err != nil {
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
 
 	ctrl := &Blog{
 		model: model,
 	}
 
-	return ctrl, err
+	return ctrl, nil
 }
