@@ -20,7 +20,7 @@ func main() {
 	err := database.CreateInstance(mysql, "./mysql.json")
 	defer common.CheckFatal(err)
 
-	form := &PersonForm{
+	form := &PersonVO{
 		Name:  "leking",
 		Phone: "18900000000",
 	}

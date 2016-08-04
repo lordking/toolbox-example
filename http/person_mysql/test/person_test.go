@@ -51,7 +51,7 @@ func TestUpdate(t *testing.T) {
 	url := kHost + "/person/update/sunny"
 
 	var data = []byte(`{
-	  "phone":"025-216549779"
+	  "phone":"025-2165497791"
 	}`)
 
 	b, _ := common.PrettyJSON(data)

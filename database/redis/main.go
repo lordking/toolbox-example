@@ -15,15 +15,15 @@ func init() {
 
 type MainDelegate struct{}
 
-func (d *MainDelegate) GetPerson(form *PersonForm) error {
-	log.Debug("form: %s", common.PrettyObject(form))
+func (d *MainDelegate) GetPerson(obj *PersonVO) error {
+	log.Debug("Receive a message: %s", common.PrettyObject(obj))
 
 	return nil
 }
 
 func main() {
 
-	form := &PersonForm{
+	obj := &PersonVO{
 		Name:  "leking",
 		Phone: "18900000000",
 	}
@@ -39,13 +39,13 @@ func main() {
 	}
 
 	//设置或新增
-	err = p.Set("leking", form, 10)
+	err = p.Set("leking", obj, 10)
 	defer common.CheckFatal(err)
 
 	//获取
-	form, err = p.Get("leking")
+	obj, err = p.Get("leking")
 	defer common.CheckFatal(err)
-	log.Debug("form: %s", common.PrettyObject(form))
+	log.Debug("form: %s", common.PrettyObject(obj))
 
 	//删除
 	err = p.Delete("leking")
@@ -57,7 +57,7 @@ func main() {
 
 	//发布
 	for {
-		err = p.Publish("person", form)
+		err = p.Publish("person", obj)
 		defer common.CheckFatal(err)
 		time.Sleep(1e9)
 	}

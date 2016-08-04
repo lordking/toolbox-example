@@ -1,14 +1,20 @@
 package api
 
 import (
-	ws "goutils"
-	"goutils-example/webseed/person_mysql/models"
+	"fmt"
+
 	"github.com/gin-gonic/gin"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
+
+	"github.com/lordking/toolbox-example/http/person_mysql/models"
 )
 
 type (
 	//Person 类声明
-	Person struct{}
+	Person struct {
+		model *models.Person
+	}
 
 	//PersonCreateForm 请求的创建person的json表单
 	PersonCreateForm struct {
@@ -23,46 +29,48 @@ type (
 )
 
 //Create 创建用户
-func (ctrl *Person) Create(c *gin.Context) {
+func (p *Person) Create(c *gin.Context) {
 
 	var json PersonCreateForm
 
 	err := c.BindJSON(&json)
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
-	p := models.Person{Name: json.Name, Phone: json.Phone}
-	err = p.Create()
+	obj := &models.PersonVO{
+		Name:  json.Name,
+		Phone: json.Phone,
+	}
+	err = p.model.Create(obj)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, p)
+	http.JSONResponse(c, 200, obj)
 }
 
 //Find 查询用户
-func (ctrl *Person) Find(c *gin.Context) {
+func (p *Person) Find(c *gin.Context) {
 
 	name := c.Param("name")
-	p := models.Person{}
-	result, err := p.Find(name)
+	result, err := p.model.Find(name)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, result)
+	http.JSONResponse(c, 200, result)
 }
 
 //Update 更新用户
-func (ctrl *Person) Update(c *gin.Context) {
+func (p *Person) Update(c *gin.Context) {
 
 	name := c.Param("name")
 
@@ -70,34 +78,50 @@ func (ctrl *Person) Update(c *gin.Context) {
 
 	err := c.BindJSON(&json)
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
-	p := models.Person{Phone: json.Phone}
-	result, err := p.Update(name)
+	obj := &models.PersonVO{
+		Phone: json.Phone,
+	}
+
+	num, err := p.model.Update(name, obj)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, result)
+	str := fmt.Sprintf("update  %d rows", num)
+	http.JSONResponse(c, 200, str)
 }
 
 //Delete 删除用户
-func (ctrl *Person) Delete(c *gin.Context) {
+func (p *Person) Delete(c *gin.Context) {
 
 	name := c.Param("name")
-	p := models.Person{}
-	result, err := p.Delete(name)
+
+	num, err := p.model.Delete(name)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, result)
+	str := fmt.Sprintf("delete  %d rows", num)
+	http.JSONResponse(c, 200, str)
+}
+
+func NewPerson() (*Person, error) {
+
+	model, err := models.NewPerson()
+
+	ctrl := &Person{
+		model: model,
+	}
+
+	return ctrl, err
 }

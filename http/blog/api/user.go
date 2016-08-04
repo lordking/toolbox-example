@@ -1,16 +1,18 @@
 package api
 
 import (
-	ws "goutils"
-
 	"github.com/gin-gonic/gin"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
 
-	m "goutils-example/webseed/blog/models"
+	"github.com/lordking/toolbox-example/http/blog/models"
 )
 
 type (
 	//User controller声明
-	User struct{}
+	User struct {
+		token *models.Token
+	}
 
 	//UserLoginForm 登录的json协议
 	UserLoginForm struct {
@@ -26,20 +28,33 @@ func (u *User) Login(c *gin.Context) {
 
 	err := c.BindJSON(&json)
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
 	if json.Username != "admin" && json.Password != "admin" {
-		ws.JSONResponse(c, 401, "用户名或密码错误")
+		http.JSONResponse(c, 401, "用户名或密码错误")
 		return
 	}
 
-	token := m.Token{}
-	t, _ := token.Create()
+	obj := &models.TokenVO{}
+	err = u.token.Create(obj)
+	if err != nil {
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
+	}
 
-	t.ClearExpireTokens() //清除已退休的token
+	u.token.ClearExpireTokens() //清除已退休的token
+	http.JSONResponse(c, 200, obj)
+}
 
-	ws.JSONResponse(c, 200, t)
+func NewUser() (*User, error) {
 
+	token, err := models.NewToken()
+
+	ctrl := &User{
+		token: token,
+	}
+
+	return ctrl, err
 }

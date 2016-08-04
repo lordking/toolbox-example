@@ -8,10 +8,6 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-const (
-	collectionName = "person"
-)
-
 type (
 	Person struct {
 		collection *mgo.Collection
@@ -84,7 +80,7 @@ func NewPerson() (*Person, error) {
 		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
-	collection, err := db.GetCollection(collectionName)
+	collection, err := db.GetCollection("person")
 	if err != nil {
 		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}

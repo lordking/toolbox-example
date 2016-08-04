@@ -1,6 +1,6 @@
 {
-	"port": ":8000",
-	"ssl_port": ":8443",
-	"ssl_cert": "./cert.pem",
-	"ssl_key": "./key.pem"
+    "port": ":8000",
+    "ssl_port": ":8443",
+    "ssl_cert": "./cert.pem",
+    "ssl_key": "./key.pem"
 }

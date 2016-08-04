@@ -4,15 +4,18 @@ import (
 	"strconv"
 
 	"github.com/gin-gonic/gin"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
 
-	ws "goutils"
-	"goutils-example/webseed/blog/models"
+	"github.com/lordking/toolbox-example/http/blog/models"
 )
 
 type (
 
 	//Blog controller声明
-	Blog struct{}
+	Blog struct {
+		model *models.Blog
+	}
 
 	//BlogCreateForm 创建日志的json协议
 	BlogCreateForm struct {
@@ -29,91 +32,100 @@ type (
 )
 
 //Create 创建日志
-func (ctrl *Blog) Create(c *gin.Context) {
+func (b *Blog) Create(c *gin.Context) {
 
-	var json BlogCreateForm
+	var form BlogCreateForm
 
-	err := c.BindJSON(&json)
+	err := c.BindJSON(&form)
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
-	b := models.Blog{Subject: json.Subject, Blog: json.Blog, Author: json.Author}
-	err = b.Create()
+	obj := &models.BlogVO{Subject: form.Subject, Blog: form.Blog, Author: form.Author}
+	err = b.model.Create(obj)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, b)
+	http.JSONResponse(c, 200, obj)
 }
 
 //Find 查找日志
-func (ctrl *Blog) Find(c *gin.Context) {
+func (b *Blog) Find(c *gin.Context) {
 
 	start, err := strconv.Atoi(c.Param("start"))
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
 	limit, err := strconv.Atoi(c.Param("limit"))
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
-	b := models.Blog{}
-	result, err := b.Find(start, limit)
+	result, err := b.model.Find(start, limit)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, result)
+	http.JSONResponse(c, 200, result)
 }
 
 //Update 更新日志
-func (ctrl *Blog) Update(c *gin.Context) {
+func (b *Blog) Update(c *gin.Context) {
 
 	id := c.Param("id")
-	var json BlogUpdateForm
+	var form BlogUpdateForm
 
-	err := c.BindJSON(&json)
+	err := c.BindJSON(&form)
 	if err != nil {
-		ws.JSONResponse(c, 403, err)
+		http.JSONResponse(c, 403, err)
 		return
 	}
 
-	b := models.Blog{Subject: json.Subject, Blog: json.Blog}
-	err = b.Update(id)
+	obj := &models.BlogVO{Subject: form.Subject, Blog: form.Blog}
 
+	err = b.model.Update(id, obj)
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, "ok")
+	http.JSONResponse(c, 200, "ok")
 }
 
 //Delete 删除日志
-func (ctrl *Blog) Delete(c *gin.Context) {
+func (b *Blog) Delete(c *gin.Context) {
 
 	id := c.Param("id")
-	b := models.Blog{}
-	err := b.Delete(id)
+	err := b.model.Delete(id)
 
 	if err != nil {
-		err := err.(*ws.Error)
-		ws.JSONResponse(c, err.Code, err.Message)
+		err := err.(*common.Error)
+		http.JSONResponse(c, err.Code, err.Message)
 		return
 	}
 
-	ws.JSONResponse(c, 200, "ok")
+	http.JSONResponse(c, 200, "ok")
+}
+
+func NewBlog() (*Blog, error) {
+
+	model, err := models.NewBlog()
+
+	ctrl := &Blog{
+		model: model,
+	}
+
+	return ctrl, err
 }

@@ -18,7 +18,7 @@ func main() {
 	err := database.CreateInstance(mongo, "./mongo.json")
 	defer common.CheckFatal(err)
 
-	form := &PersonForm{
+	form := &PersonVO{
 		Name:  "leking",
 		Phone: "18900000000",
 	}

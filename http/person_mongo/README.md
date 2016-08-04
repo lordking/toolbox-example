@@ -58,7 +58,7 @@ ssl_cert和ssl_key的生成方式是：
   $ godep go run main.go
 ```
 
-## 4 单元测试
+## 4 测试
 
 ### 4.1 单元测试
 
@@ -69,8 +69,6 @@ ssl_cert和ssl_key的生成方式是：
 	$ go test -v --test.run TestDelete
 
 ### 4.2 性能测试
-
-mongodb 缺少数据库连接池，性能测试不通过
 
 	$ cd benchmark
 	$ go run benchmark.go -m RequestCreate

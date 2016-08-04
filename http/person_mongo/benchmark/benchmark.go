@@ -3,7 +3,6 @@ package main
 import (
 	"flag"
 	"reflect"
-	"time"
 
 	"github.com/lordking/toolbox-example/http/person_mongo/benchmark/testcase"
 	"github.com/lordking/toolbox/log"
@@ -25,13 +24,6 @@ func main() {
 	s := &testcase.TestCase{}
 	v := reflect.ValueOf(s)
 
-	for {
-
-		for j := 0; j < 100; j++ {
-			go v.MethodByName(*methodName).Call(nil)
-		}
-
-		time.Sleep(1 * time.Second)
-	}
+	v.MethodByName(*methodName).Call(nil)
 
 }

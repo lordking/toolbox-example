@@ -2,7 +2,7 @@
 
 blog样例，是mongodb + restapi + webapp的样例。
 
-## 1\. 安装说明
+## 1. 安装说明
 
 运行之前，除go语言环境外先要安装js库。步骤如下：
 
@@ -26,7 +26,7 @@ blog样例，是mongodb + restapi + webapp的样例。
   +- config
       |
       |---- http.json
-      +---- db.json
+      +---- mongo.json
 ```
 
 ### 2.1 HTTP配置文件: http.json
@@ -40,7 +40,7 @@ ssl_key  | HTTPS需要的公钥文件的相对路径。
 
 ssl_cert和ssl_key的生成方式是：
 
-```
+```bash
   $ go run $GOROOT/src/crypto/tls/generate_cert.go --host="localhost"
 ```
 
@@ -59,7 +59,7 @@ ssl_cert和ssl_key的生成方式是：
 
 ## 3 编译运行
 
-```
+```bash
   $ godep go build
   $ ./blog
 ```
@@ -74,14 +74,14 @@ ssl_cert和ssl_key的生成方式是：
 
 ### 4.1 用户登录接口测试
 
-```
+```bash
   $ cd test
   $ go test -v -test.run TestLogin
 ```
 
 如果单元测试运行成功，将会在终端上的打印输出中获得token。这将用于后面的单元测试。 打开test.go文件，修改token的值。如：
 
-```
+```golang
   token = "57884dba17a06faba180e46a"
 ```
 
@@ -93,7 +93,7 @@ ssl_cert和ssl_key的生成方式是：
 
 #### 4.3 查询日志
 
-```
+```bash
   $ go test -v -test.run TestFind
 ```
 
@@ -101,13 +101,13 @@ ssl_cert和ssl_key的生成方式是：
 
 在运行测试之前，先通过之前创建或者查询的测试用例获取一个id。然后打开test.go文件，修改update_id的值。如：
 
-```
+```golang
   update_id := "57884d1a17a06faba180e468"
 ```
 
 再运行一下测试
 
-```
+```bash
   $ go test -v -test.run TestUpdate
 ```
 
@@ -115,12 +115,12 @@ ssl_cert和ssl_key的生成方式是：
 
 在运行测试之前，先通过之前创建或者查询的测试用例获取一个id。然后打开test.go文件，找到delete_id的值。如：
 
-```
+```golang
   delete_id = "57884d1a17a06faba180e468"
 ```
 
 再运行一下测试
 
-```
+```bash
   $ go test -v -test.run TestDelete
 ```

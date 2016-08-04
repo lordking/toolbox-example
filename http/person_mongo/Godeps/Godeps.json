@@ -1,5 +1,5 @@
 {
-	"ImportPath": "github.com/lordking/toolbox-example/http/blog",
+	"ImportPath": "github.com/lordking/toolbox-example/http/person_mongo",
 	"GoVersion": "go1.6",
 	"GodepVersion": "v74",
 	"Deps": [
@@ -7,10 +7,6 @@
 			"ImportPath": "github.com/Sirupsen/logrus",
 			"Comment": "v0.10.0-21-g32055c3",
 			"Rev": "32055c351ea8b00b96d70f28db48d9840feaf0ec"
-		},
-		{
-			"ImportPath": "github.com/gin-gonic/contrib/static",
-			"Rev": "547e518040cfb96576b507d2f26779ab9c6fc829"
 		},
 		{
 			"ImportPath": "github.com/gin-gonic/gin",
@@ -33,23 +29,23 @@
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/common",
-			"Rev": "24edfac0083a9fd022bfa3903d21e3be8cf8d471"
+			"Rev": "51b8990245da9df2b07f7a881f415c54b3bcc0b2"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/database",
-			"Rev": "24edfac0083a9fd022bfa3903d21e3be8cf8d471"
+			"Rev": "51b8990245da9df2b07f7a881f415c54b3bcc0b2"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/database/mongo",
-			"Rev": "24edfac0083a9fd022bfa3903d21e3be8cf8d471"
+			"Rev": "51b8990245da9df2b07f7a881f415c54b3bcc0b2"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/http",
-			"Rev": "24edfac0083a9fd022bfa3903d21e3be8cf8d471"
+			"Rev": "51b8990245da9df2b07f7a881f415c54b3bcc0b2"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/log",
-			"Rev": "24edfac0083a9fd022bfa3903d21e3be8cf8d471"
+			"Rev": "51b8990245da9df2b07f7a881f415c54b3bcc0b2"
 		},
 		{
 			"ImportPath": "github.com/manucorporat/sse",

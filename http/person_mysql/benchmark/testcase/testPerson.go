@@ -5,7 +5,9 @@ import (
 	"math/rand"
 	"time"
 
-	ws "goutils"
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/http"
+	"github.com/lordking/toolbox/log"
 )
 
 //RequestCreate hello接口的测试案例
@@ -34,16 +36,16 @@ func (t *TestCase) RequestCreate() {
 				}`, t, t)
 
 				data := []byte(str)
-				b, _ := ws.PrettyJSON(data)
-				ws.LogDebug("Request: %s", b)
+				b, _ := common.PrettyJSON(data)
+				log.Debug("Request: %s", b)
 
-				result, err := ws.RequestJSON("POST", url, data)
+				result, err := http.RequestJSON("POST", url, data)
 				if err != nil {
-					ws.LogError("Error: %q", err)
+					log.Error("Error: %s", err.Error())
 				}
 
-				s, _ := ws.PrettyJSON(result)
-				ws.LogDebug("Response: %s", s)
+				s, _ := common.PrettyJSON(result)
+				log.Debug("Response: %s", s)
 
 			}(k)
 
@@ -69,16 +71,16 @@ func (t *TestCase) RequestFind() {
 				url := fmt.Sprintf("%s/person/leking%d", host, r.Intn(limit))
 
 				data := []byte(`{}`)
-				b, _ := ws.PrettyJSON(data)
-				ws.LogDebug("Request: %s", b)
+				b, _ := common.PrettyJSON(data)
+				log.Debug("Request: %s", b)
 
-				result, err := ws.RequestJSON("GET", url, data)
+				result, err := http.RequestJSON("GET", url, data)
 				if err != nil {
-					ws.LogError("Error: %q", err)
+					log.Error("Error: %s", err.Error())
 				}
 
-				s, _ := ws.PrettyJSON(result)
-				ws.LogDebug("Response: %s", s)
+				s, _ := common.PrettyJSON(result)
+				log.Debug("Response: %s", s)
 
 			}()
 
@@ -107,16 +109,16 @@ func (t *TestCase) RequestUpdate() {
 				}`, r.Intn(limit))
 
 				data := []byte(str)
-				b, _ := ws.PrettyJSON(data)
-				ws.LogDebug("Request: %s", b)
+				b, _ := common.PrettyJSON(data)
+				log.Debug("Request: %s", b)
 
-				result, err := ws.RequestJSON("PUT", url, data)
+				result, err := http.RequestJSON("PUT", url, data)
 				if err != nil {
-					ws.LogError("Error: %q", err)
+					log.Error("Error: %s", err.Error())
 				}
 
-				s, _ := ws.PrettyJSON(result)
-				ws.LogDebug("Response: %s", s)
+				s, _ := common.PrettyJSON(result)
+				log.Debug("Response: %s", s)
 
 			}()
 
@@ -141,16 +143,16 @@ func (t *TestCase) RequestDelete() {
 				url := fmt.Sprintf("%s/person/delete/leking%d", host, r.Intn(limit))
 
 				data := []byte(`{}`)
-				b, _ := ws.PrettyJSON(data)
-				ws.LogDebug("Request: %s", b)
+				b, _ := common.PrettyJSON(data)
+				log.Debug("Request: %s", b)
 
-				result, err := ws.RequestJSON("DELETE", url, data)
+				result, err := http.RequestJSON("DELETE", url, data)
 				if err != nil {
-					ws.LogError("Error: %q", err)
+					log.Error("Error: %s", err.Error())
 				}
 
-				s, _ := ws.PrettyJSON(result)
-				ws.LogDebug("Response: %s", s)
+				s, _ := common.PrettyJSON(result)
+				log.Debug("Response: %s", s)
 
 			}()
 

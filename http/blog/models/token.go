@@ -3,75 +3,63 @@ package models
 import (
 	"time"
 
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database"
+	"github.com/lordking/toolbox/database/mongo"
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-
-	ws "goutils"
 )
 
-type Token struct {
-	Id         bson.ObjectId `json:"id" bson:"_id"`
-	Token      string        `json:"token" bson:"token"`
-	ExpireTime int64         `json:"expireTime" bson:"expireTime"`
-	CreateTime int64         `json:"createTime" bson:"createTime"`
-	UpdateTime int64         `json:"updateTime" bson:"updateTime"`
+type (
+	Token struct {
+		collection *mgo.Collection
+	}
+
+	TokenVO struct {
+		Id         bson.ObjectId `json:"id" bson:"_id"`
+		Token      string        `json:"token" bson:"token"`
+		ExpireTime int64         `bson:"expireTime"`
+		createTime int64         `bson:"createTime"`
+		updateTime int64         `bson:"updateTime"`
+	}
+)
+
+func (t *Token) Create(obj *TokenVO) error {
+
+	obj.Id = bson.NewObjectId() //生成id
+	obj.Token = obj.Id.Hex()
+	obj.createTime = time.Now().Unix()
+	obj.updateTime = obj.createTime
+	obj.ExpireTime = obj.updateTime + 3600
+
+	err := t.collection.Insert(obj)
+	if err != nil {
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	return nil
 }
 
-func (t *Token) Create() (*Token, error) {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("token")
+func (t *Token) Find(token string) (*TokenVO, error) {
 
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodeInternal, err)
-	}
-
-	t.Id = bson.NewObjectId() //生成id
-
-	t.CreateTime = time.Now().Unix()
-	t.UpdateTime = t.CreateTime
-	t.ExpireTime = t.CreateTime + 3600
-	t.Token = t.Id.Hex()
-
-	err = collection.Insert(t)
-
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodedParams, err)
-	}
-
-	return t, nil
-}
-
-func (t *Token) Find(token string) (*Token, error) {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("token")
-
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodeInternal, err)
-	}
-
-	var result *Token
+	var result *TokenVO
 	objId := bson.ObjectIdHex(token)
-	err = collection.Find(bson.M{"_id": objId}).One(&result)
 
+	err := t.collection.Find(bson.M{"_id": objId}).One(&result)
 	if err != nil {
-		return nil, ws.ToError(ws.ErrCodedParams, err)
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
 	return result, nil
 }
 
 func (t *Token) Delete(id string) error {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("token")
-
-	if err != nil {
-		return ws.ToError(ws.ErrCodeInternal, err)
-	}
 
 	objId := bson.ObjectIdHex(id)
-	err = collection.RemoveId(objId)
 
+	err := t.collection.RemoveId(objId)
 	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 	return err
 }
@@ -82,19 +70,30 @@ func (t *Token) Delete(id string) error {
  * @return {[type]}   [description]
  */
 func (t *Token) ClearExpireTokens() error {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("token")
-
-	if err != nil {
-		return ws.ToError(ws.ErrCodeInternal, err)
-	}
 
 	nowTime := time.Now().Unix()
 
-	_, err = collection.RemoveAll(bson.M{"expireTime": bson.M{"$lt": nowTime}})
-
+	_, err := t.collection.RemoveAll(bson.M{"expireTime": bson.M{"$lt": nowTime}})
 	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
+
 	return err
+}
+
+func NewToken() (*Token, error) {
+
+	//获取单例
+	db := (database.Instance).(*mongo.Mongo)
+	err := db.Connect()
+	if err != nil {
+		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	collection, err := db.GetCollection("token")
+	if err != nil {
+		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	return &Token{collection: collection}, err
 }

@@ -3,110 +3,99 @@ package models
 import (
 	"time"
 
+	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database"
+	"github.com/lordking/toolbox/database/mongo"
+	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
-
-	ws "goutils"
 )
 
-type Blog struct {
-	Id         bson.ObjectId `json:"id" bson:"_id"`
-	Subject    string        `json:"subject" bson:"subject"`
-	Blog       string        `json:"blog" bson:"blog"`
-	Author     string        `json:"author" bson:"author"`
-	CreateTime int64         `json:"createTime" bson:"createTime"`
-	UpdateTime int64         `json:"updateTime" bson:"updateTime"`
-}
-
-func (b *Blog) Create() error {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("blog")
-
-	if err != nil {
-		return ws.ToError(ws.ErrCodeInternal, err)
+type (
+	Blog struct {
+		collection *mgo.Collection
 	}
 
-	b.Id = bson.NewObjectId() //生成id
-	b.CreateTime = time.Now().Unix()
-	b.UpdateTime = b.CreateTime
-	err = collection.Insert(b)
-
-	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+	BlogVO struct {
+		Id         bson.ObjectId `json:"id" bson:"_id"`
+		Subject    string        `json:"subject" bson:"subject"`
+		Blog       string        `json:"blog" bson:"blog"`
+		Author     string        `json:"author" bson:"author"`
+		createTime int64         `bson:"createTime"`
+		updateTime int64         `bson:"updateTime"`
 	}
+)
+
+func (b *Blog) Create(obj *BlogVO) error {
+
+	obj.Id = bson.NewObjectId() //生成id
+	obj.createTime = time.Now().Unix()
+	obj.updateTime = obj.createTime
+
+	err := b.collection.Insert(obj)
+	if err != nil {
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
 	return nil
 }
 
-func (b *Blog) Find(start int, number int) ([]Blog, error) {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("blog")
-
-	if err != nil {
-		return nil, ws.ToError(ws.ErrCodeInternal, err)
-	}
+func (b *Blog) Find(start int, number int) ([]BlogVO, error) {
 
 	//测试查询
-	var result []Blog
-	err = collection.Find(nil).Skip(start).Limit(number).All(&result)
-
+	var result []BlogVO
+	err := b.collection.Find(nil).Skip(start).Limit(number).All(&result)
 	if err != nil {
-		return nil, ws.ToError(ws.ErrCodedParams, err)
+		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
+
 	return result, nil
 }
 
-func (b *Blog) Update(id string) error {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("blog")
+func (b *Blog) Update(id string, obj *BlogVO) error {
 
+	obj.updateTime = time.Now().Unix()
+
+	updateJson, err := mongo.UpdateJsonWith(obj)
 	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
-	//测试更新
-	b.Id = bson.ObjectIdHex(id)
-
-	b.UpdateTime = time.Now().Unix()
-	data, err := bson.Marshal(b)
-	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
-	}
-
-	var updateJson map[string]interface{}
-	err = bson.Unmarshal(data, &updateJson)
-	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
-	}
-
-	delete(updateJson, "_id")
 	delete(updateJson, "createTime")
-	for key, value := range updateJson {
-		if value == "" || value == nil {
-			delete(updateJson, key)
-		}
-	}
 
-	err = collection.UpdateId(b.Id, bson.M{"$set": updateJson})
-
+	objId := bson.ObjectIdHex(id)
+	err = b.collection.UpdateId(objId, bson.M{"$set": updateJson})
 	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
+
 	return nil
 }
 
 func (b *Blog) Delete(id string) error {
-	mongo := (ws.DataSourceInstance).(*ws.Mongo)
-	collection, err := mongo.GetCollection("blog")
 
-	if err != nil {
-		return ws.ToError(ws.ErrCodeInternal, err)
-	}
-
-	//测试查询
 	objId := bson.ObjectIdHex(id)
-	err = collection.RemoveId(objId)
+	err := b.collection.RemoveId(objId)
 
 	if err != nil {
-		return ws.ToError(ws.ErrCodedParams, err)
+		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
+
 	return err
+}
+
+func NewBlog() (*Blog, error) {
+
+	//获取单例
+	db := (database.Instance).(*mongo.Mongo)
+	err := db.Connect()
+	if err != nil {
+		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	collection, err := db.GetCollection("blog")
+	if err != nil {
+		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+	}
+
+	return &Blog{collection: collection}, err
 }
