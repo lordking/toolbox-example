@@ -32,6 +32,8 @@ godep go run main.go person.go
 
 ## 编译
 
+### Mac
+
 ```
 godep go build --tags "libsqlite3 darwin"
 ```
