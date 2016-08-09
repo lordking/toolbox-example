@@ -15,7 +15,7 @@ func main() {
 
 	//创建一个数据库访问单例
 	mongo := mongo.New()
-	err := database.CreateInstance(mongo, "./mongo.json")
+	err := database.Configure(mongo, "./mongo.json")
 	defer common.CheckFatal(err)
 
 	form := &PersonVO{
@@ -23,7 +23,7 @@ func main() {
 		Phone: "18900000000",
 	}
 
-	p := &Person{}
+	p := NewPerson(mongo)
 
 	//插入数据
 	p.insert(form)

@@ -10,19 +10,23 @@
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/common",
-			"Rev": "346c3dd3126556bf5b4d2bde4cc9f75822aaee13"
+			"Comment": "1.0-5-g52c7400",
+			"Rev": "52c7400c65f09c48ebb83e8ca7a5474ca7b47ea4"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/database",
-			"Rev": "346c3dd3126556bf5b4d2bde4cc9f75822aaee13"
+			"Comment": "1.0-5-g52c7400",
+			"Rev": "52c7400c65f09c48ebb83e8ca7a5474ca7b47ea4"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/database/mongo",
-			"Rev": "346c3dd3126556bf5b4d2bde4cc9f75822aaee13"
+			"Comment": "1.0-5-g52c7400",
+			"Rev": "52c7400c65f09c48ebb83e8ca7a5474ca7b47ea4"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/log",
-			"Rev": "346c3dd3126556bf5b4d2bde4cc9f75822aaee13"
+			"Comment": "1.0-5-g52c7400",
+			"Rev": "52c7400c65f09c48ebb83e8ca7a5474ca7b47ea4"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
