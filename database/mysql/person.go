@@ -8,10 +8,6 @@ import (
 	"github.com/lordking/toolbox/log"
 )
 
-const (
-	collectionName = "person"
-)
-
 type (
 	Person struct {
 		db *mysql.MySQL

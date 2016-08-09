@@ -1,0 +1,41 @@
+{
+	"ImportPath": "github.com/lordking/toolbox-example/database/sqlite3",
+	"GoVersion": "go1.6",
+	"GodepVersion": "v74",
+	"Deps": [
+		{
+			"ImportPath": "github.com/Sirupsen/logrus",
+			"Comment": "v0.10.0-21-g32055c3",
+			"Rev": "32055c351ea8b00b96d70f28db48d9840feaf0ec"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/common",
+			"Comment": "1.0-1-g54ec42c",
+			"Rev": "54ec42c8ee80f7223b7a3a927afe351fca190135"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/database",
+			"Comment": "1.0-1-g54ec42c",
+			"Rev": "54ec42c8ee80f7223b7a3a927afe351fca190135"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/database/sqlite3",
+			"Comment": "1.0-1-g54ec42c",
+			"Rev": "54ec42c8ee80f7223b7a3a927afe351fca190135"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/log",
+			"Comment": "1.0-1-g54ec42c",
+			"Rev": "54ec42c8ee80f7223b7a3a927afe351fca190135"
+		},
+		{
+			"ImportPath": "github.com/mattn/go-sqlite3",
+			"Comment": "v1.1.0-71-ge118d44",
+			"Rev": "e118d4451349065b8e7ce0f0af32e033995363f8"
+		},
+		{
+			"ImportPath": "golang.org/x/sys/unix",
+			"Rev": "a646d33e2ee3172a661fc09bca23bb4889a41bc8"
+		}
+	]
+}
