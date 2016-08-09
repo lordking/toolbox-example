@@ -5,13 +5,12 @@ import (
 
 	_ "github.com/go-sql-driver/mysql"
 	"github.com/lordking/toolbox/common"
-	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/mysql"
 )
 
 type (
 	Person struct {
-		conn *sql.DB
+		db *mysql.MySQL
 	}
 
 	PersonVO struct {
@@ -23,7 +22,9 @@ type (
 
 func (p *Person) Create(obj *PersonVO) error {
 
-	stmt, err := p.conn.Prepare("INSERT INTO person(name, phone) VALUES(?, ?)")
+	conn := (p.db.GetConnection()).(*sql.DB)
+
+	stmt, err := conn.Prepare("INSERT INTO person(name, phone) VALUES(?, ?)")
 	defer stmt.Close()
 	if err != nil {
 		return common.NewErrorWithOther(common.ErrCodeInternal, err)
@@ -46,8 +47,10 @@ func (p *Person) Create(obj *PersonVO) error {
 
 func (p *Person) Find(name string) ([]PersonVO, error) {
 
+	conn := (p.db.GetConnection()).(*sql.DB)
+
 	var result []PersonVO
-	stmt, err := p.conn.Query("SELECT id, name, phone FROM person WHERE name = ?", name)
+	stmt, err := conn.Query("SELECT id, name, phone FROM person WHERE name = ?", name)
 	defer stmt.Close()
 	if err != nil {
 		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
@@ -66,7 +69,9 @@ func (p *Person) Find(name string) ([]PersonVO, error) {
 
 func (p *Person) Update(name string, obj *PersonVO) (int64, error) {
 
-	stmt, err := p.conn.Prepare("UPDATE person SET phone=? where name=?")
+	conn := (p.db.GetConnection()).(*sql.DB)
+
+	stmt, err := conn.Prepare("UPDATE person SET phone=? where name=?")
 	defer stmt.Close()
 	if err != nil {
 		return -1, common.NewErrorWithOther(common.ErrCodeInternal, err)
@@ -83,7 +88,9 @@ func (p *Person) Update(name string, obj *PersonVO) (int64, error) {
 
 func (p *Person) Delete(name string) (int64, error) {
 
-	stmt, err := p.conn.Prepare("DELETE FROM person WHERE name=?")
+	conn := (p.db.GetConnection()).(*sql.DB)
+
+	stmt, err := conn.Prepare("DELETE FROM person WHERE name=?")
 	defer stmt.Close()
 	if err != nil {
 		return -1, common.NewErrorWithOther(common.ErrCodeInternal, err)
@@ -98,16 +105,12 @@ func (p *Person) Delete(name string) (int64, error) {
 	return rowsCount, nil
 }
 
-func NewPerson() (*Person, error) {
+func NewPerson(db *mysql.MySQL) (*Person, error) {
 
-	//获取单例
-	db := (database.Instance).(*mysql.MySQL)
 	err := db.Connect()
 	if err != nil {
 		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
-	conn := (db.GetConnection()).(*sql.DB)
-
-	return &Person{conn: conn}, err
+	return &Person{db: db}, err
 }

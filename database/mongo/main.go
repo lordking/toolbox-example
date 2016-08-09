@@ -23,7 +23,8 @@ func main() {
 		Phone: "18900000000",
 	}
 
-	p := NewPerson(mongo)
+	p, err := NewPerson(mongo)
+	defer common.CheckFatal(err)
 
 	//插入数据
 	p.insert(form)

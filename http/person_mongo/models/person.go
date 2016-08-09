@@ -2,7 +2,6 @@ package models
 
 import (
 	"github.com/lordking/toolbox/common"
-	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/mongo"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -71,10 +70,9 @@ func (p *Person) Delete(name string) (*mgo.ChangeInfo, error) {
 	return result, nil
 }
 
-func NewPerson() (*Person, error) {
+func NewPerson(db *mongo.Mongo) (*Person, error) {
 
 	//获取单例
-	db := (database.Instance).(*mongo.Mongo)
 	err := db.Connect()
 	if err != nil {
 		err = common.NewErrorWithOther(common.ErrCodeInternal, err)

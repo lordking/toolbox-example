@@ -2,7 +2,6 @@ package main
 
 import (
 	"github.com/lordking/toolbox/common"
-	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/redis"
 	"github.com/lordking/toolbox/log"
 )
@@ -14,7 +13,8 @@ type (
 	}
 
 	Person struct {
-		Delegate PersonDelegate
+		delegate PersonDelegate
+		db       *redis.Redis
 	}
 
 	PersonVO struct {
@@ -25,19 +25,16 @@ type (
 
 func (p *Person) Set(key string, obj *PersonVO, expire int) error {
 
-	//获取单例
-	db := (database.Instance).(*redis.Redis)
-
-	if err := db.Connect(); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Connect(); err != nil {
+		return err
 	}
 
-	if err := db.SetObject(key, obj, expire); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.SetObject(key, obj, expire); err != nil {
+		return err
 	}
 
-	if err := db.Close(); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Close(); err != nil {
+		return err
 	}
 
 	return nil
@@ -45,21 +42,17 @@ func (p *Person) Set(key string, obj *PersonVO, expire int) error {
 
 func (p *Person) Get(key string) (*PersonVO, error) {
 
+	if err := p.db.Connect(); err != nil {
+		return nil, err
+	}
+
 	obj := new(PersonVO)
-
-	//获取单例
-	db := (database.Instance).(*redis.Redis)
-
-	if err := db.Connect(); err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.GetObject(obj, key); err != nil {
+		return nil, err
 	}
 
-	if err := db.GetObject(obj, key); err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
-	}
-
-	if err := db.Close(); err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Close(); err != nil {
+		return nil, err
 	}
 
 	return obj, nil
@@ -67,19 +60,16 @@ func (p *Person) Get(key string) (*PersonVO, error) {
 
 func (p *Person) Delete(key string) error {
 
-	//获取单例
-	db := (database.Instance).(*redis.Redis)
-
-	if err := db.Connect(); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Connect(); err != nil {
+		return err
 	}
 
-	if err := db.DeleteObject(key); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.DeleteObject(key); err != nil {
+		return err
 	}
 
-	if err := db.Close(); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Close(); err != nil {
+		return err
 	}
 
 	return nil
@@ -87,19 +77,16 @@ func (p *Person) Delete(key string) error {
 
 func (p *Person) Publish(channel string, obj *PersonVO) error {
 
-	//获取单例
-	db := (database.Instance).(*redis.Redis)
+	if err := p.db.Connect(); err != nil {
+		return err
+	}
 
-	if err := db.Connect(); err != nil {
+	if err := p.db.PublishObject(channel, obj); err != nil {
 		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
-	if err := db.PublishObject(channel, obj); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
-	}
-
-	if err := db.Close(); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Close(); err != nil {
+		return err
 	}
 
 	return nil
@@ -107,29 +94,26 @@ func (p *Person) Publish(channel string, obj *PersonVO) error {
 
 func (p *Person) Subscribe(channel string) error {
 
-	//获取单例
-	db := (database.Instance).(*redis.Redis)
-
-	if err := db.Connect(); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+	if err := p.db.Connect(); err != nil {
+		return err
 	}
 
-	psc, err := db.Subscribe(channel)
+	psc, err := p.db.Subscribe(channel)
 	if err != nil {
 		return common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}
 
-	db.Receive(psc)
+	p.db.Receive(psc)
 
 	go func() {
 
 		for {
-			data := <-db.ReceiveQueue
+			data := <-p.db.ReceiveQueue
 
-			if p.Delegate != nil {
+			if p.delegate != nil {
 				obj := new(PersonVO)
 				common.ReadJSON(obj, data)
-				if err := p.Delegate.GetPerson(obj); err != nil {
+				if err := p.delegate.GetPerson(obj); err != nil {
 					log.Error("Receive error:", err)
 				}
 			}
@@ -139,4 +123,11 @@ func (p *Person) Subscribe(channel string) error {
 	}()
 
 	return nil
+}
+
+func NewPerson(db *redis.Redis, delegate PersonDelegate) *Person {
+	return &Person{
+		db:       db,
+		delegate: delegate,
+	}
 }

@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database/mongo"
 	"github.com/lordking/toolbox/http"
 
 	"github.com/lordking/toolbox-example/http/person_mongo/models"
@@ -112,9 +113,9 @@ func (p *Person) Delete(c *gin.Context) {
 	http.JSONResponse(c, 200, result)
 }
 
-func NewPerson() (*Person, error) {
+func NewPerson(db *mongo.Mongo) (*Person, error) {
 
-	model, err := models.NewPerson()
+	model, err := models.NewPerson(db)
 	if err != nil {
 		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}

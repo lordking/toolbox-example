@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/lordking/toolbox/common"
-	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/mongo"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -81,10 +80,9 @@ func (t *Token) ClearExpireTokens() error {
 	return err
 }
 
-func NewToken() (*Token, error) {
+func NewToken(db *mongo.Mongo) (*Token, error) {
 
 	//获取单例
-	db := (database.Instance).(*mongo.Mongo)
 	err := db.Connect()
 	if err != nil {
 		err = common.NewErrorWithOther(common.ErrCodeInternal, err)

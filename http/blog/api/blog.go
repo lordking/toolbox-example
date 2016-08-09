@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database/mongo"
 	"github.com/lordking/toolbox/http"
 
 	"github.com/lordking/toolbox-example/http/blog/models"
@@ -119,9 +120,9 @@ func (b *Blog) Delete(c *gin.Context) {
 	http.JSONResponse(c, 200, "ok")
 }
 
-func NewBlog() (*Blog, error) {
+func NewBlog(mongo *mongo.Mongo) (*Blog, error) {
 
-	model, err := models.NewBlog()
+	model, err := models.NewBlog(mongo)
 	if err != nil {
 		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}

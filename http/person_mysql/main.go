@@ -28,13 +28,13 @@ func main() {
 
 	//创建一个数据库访问单例
 	mysql := mysql.New()
-	err := database.CreateInstance(mysql, *dbConfigPath)
+	err := database.Configure(mysql, *dbConfigPath)
 	defer common.CheckFatal(err)
 
 	//创建web服务
 	h := http.CreateServer(*httpConfigPath)
 
-	person, err := api.NewPerson()
+	person, err := api.NewPerson(mysql)
 	defer common.CheckError(err)
 
 	group := h.Group("/person")

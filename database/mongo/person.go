@@ -28,9 +28,6 @@ type (
 
 func (p *Person) insert(obj *PersonVO) {
 
-	err := p.db.Connect()
-	defer common.CheckFatal(err)
-
 	obj.Id = bson.NewObjectId()
 	collection, err := p.db.GetCollection(collectionName)
 	err = collection.Insert(obj)
@@ -38,13 +35,9 @@ func (p *Person) insert(obj *PersonVO) {
 
 	log.Debug("Insert result: %s", common.PrettyObject(obj))
 
-	p.db.Close()
 }
 
 func (p *Person) findAll(name string) {
-
-	err := p.db.Connect()
-	defer common.CheckFatal(err)
 
 	var result []PersonVO
 	collection, err := p.db.GetCollection(collectionName)
@@ -53,13 +46,9 @@ func (p *Person) findAll(name string) {
 
 	log.Debug("Find result: %s", common.PrettyObject(result))
 
-	p.db.Close()
 }
 
 func (p *Person) updateAll(name string, obj *PersonVO) {
-
-	err := p.db.Connect()
-	defer common.CheckFatal(err)
 
 	var result *mgo.ChangeInfo
 	collection, err := p.db.GetCollection(collectionName)
@@ -68,13 +57,9 @@ func (p *Person) updateAll(name string, obj *PersonVO) {
 
 	log.Debug("Update result: %s", common.PrettyObject(result))
 
-	p.db.Close()
 }
 
 func (p *Person) removeAll(name string) {
-
-	err := p.db.Connect()
-	defer common.CheckFatal(err)
 
 	var result *mgo.ChangeInfo
 	collection, err := p.db.GetCollection(collectionName)
@@ -82,12 +67,13 @@ func (p *Person) removeAll(name string) {
 	defer common.CheckError(err)
 
 	log.Debug("Remove result: %s", common.PrettyObject(result))
-
-	p.db.Close()
 }
 
-func NewPerson(db *mongo.Mongo) *Person {
+func NewPerson(db *mongo.Mongo) (*Person, error) {
+
+	err := db.Connect()
+
 	return &Person{
 		db: db,
-	}
+	}, err
 }

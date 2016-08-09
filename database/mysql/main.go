@@ -17,7 +17,7 @@ func main() {
 
 	//创建一个数据库访问单例
 	mysql := mysql.New()
-	err := database.CreateInstance(mysql, "./mysql.json")
+	err := database.Configure(mysql, "./mysql.json")
 	defer common.CheckFatal(err)
 
 	form := &PersonVO{
@@ -25,10 +25,10 @@ func main() {
 		Phone: "18900000000",
 	}
 
-	p := &Person{}
+	p, err := NewPerson(mysql)
+	defer common.CheckFatal(err)
 
 	//插入数据
-
 	p.Insert(form)
 
 	//查询数据

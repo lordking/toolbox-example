@@ -4,7 +4,6 @@ import (
 	"time"
 
 	"github.com/lordking/toolbox/common"
-	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/mongo"
 	mgo "gopkg.in/mgo.v2"
 	"gopkg.in/mgo.v2/bson"
@@ -83,10 +82,9 @@ func (b *Blog) Delete(id string) error {
 	return err
 }
 
-func NewBlog() (*Blog, error) {
+func NewBlog(db *mongo.Mongo) (*Blog, error) {
 
 	//获取单例
-	db := (database.Instance).(*mongo.Mongo)
 	err := db.Connect()
 	if err != nil {
 		err = common.NewErrorWithOther(common.ErrCodeInternal, err)

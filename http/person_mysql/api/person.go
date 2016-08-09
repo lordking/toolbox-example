@@ -5,6 +5,7 @@ import (
 
 	"github.com/gin-gonic/gin"
 	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database/mysql"
 	"github.com/lordking/toolbox/http"
 
 	"github.com/lordking/toolbox-example/http/person_mysql/models"
@@ -115,9 +116,9 @@ func (p *Person) Delete(c *gin.Context) {
 	http.JSONResponse(c, 200, str)
 }
 
-func NewPerson() (*Person, error) {
+func NewPerson(db *mysql.MySQL) (*Person, error) {
 
-	model, err := models.NewPerson()
+	model, err := models.NewPerson(db)
 	if err != nil {
 		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}

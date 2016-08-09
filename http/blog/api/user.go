@@ -3,6 +3,7 @@ package api
 import (
 	"github.com/gin-gonic/gin"
 	"github.com/lordking/toolbox/common"
+	"github.com/lordking/toolbox/database/mongo"
 	"github.com/lordking/toolbox/http"
 
 	"github.com/lordking/toolbox-example/http/blog/models"
@@ -48,9 +49,9 @@ func (u *User) Login(c *gin.Context) {
 	http.JSONResponse(c, 200, obj)
 }
 
-func NewUser() (*User, error) {
+func NewUser(mongo *mongo.Mongo) (*User, error) {
 
-	token, err := models.NewToken()
+	token, err := models.NewToken(mongo)
 	if err != nil {
 		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
 	}

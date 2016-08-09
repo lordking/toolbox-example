@@ -17,6 +17,8 @@ import (
 	"github.com/lordking/toolbox-example/http/blog/models"
 )
 
+var token *models.Token
+
 func init() {
 	log.SetLevel(log.DebugLevel)
 	common.ConfigRuntime()
@@ -28,11 +30,6 @@ func authorization(username, password string) error {
 	log.Debug("auth: %s : %s", username, password)
 
 	if username != "" {
-
-		token, err := models.NewToken()
-		if err != nil {
-			return err
-		}
 
 		result, _ := token.Find(username)
 		if result != nil && result.ExpireTime > time.Now().Unix() {
@@ -54,20 +51,23 @@ func main() {
 
 	//创建一个数据库访问单例
 	mongo := mongo.New()
-	err := database.CreateInstance(mongo, *dbConfigPath)
+	err := database.Configure(mongo, *dbConfigPath)
 	defer common.CheckFatal(err)
 
 	h := http.CreateServer(*httpConfigPath)
 	h.Router.Use(static.Serve("/", static.LocalFile("./assets", false)))
 
-	user, err := api.NewUser()
+	user, err := api.NewUser(mongo)
 	defer common.CheckFatal(err)
 	userGroup := h.Group("/user")
 	{
 		userGroup.POST("/login", user.Login)
 	}
 
-	blog, err := api.NewBlog()
+	token, err = models.NewToken(mongo)
+	defer common.CheckFatal(err)
+
+	blog, err := api.NewBlog(mongo)
 	defer common.CheckFatal(err)
 	blogGroup := h.Group("/blog", http.BasicAuth(authorization))
 	{

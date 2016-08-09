@@ -4,7 +4,6 @@ import (
 	"database/sql"
 
 	"github.com/lordking/toolbox/common"
-	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/mysql"
 	"github.com/lordking/toolbox/log"
 )
@@ -14,7 +13,9 @@ const (
 )
 
 type (
-	Person struct{}
+	Person struct {
+		db *mysql.MySQL
+	}
 
 	//Person 用户数据对象
 	PersonVO struct {
@@ -26,15 +27,9 @@ type (
 
 func (p *Person) Insert(obj *PersonVO) {
 
-	//获取单例
-	db := (database.Instance).(*mysql.MySQL)
+	conn := (p.db.GetConnection()).(*sql.DB)
 
-	err := db.Connect()
-	defer common.CheckFatal(err)
-
-	connection := (db.GetConnection()).(*sql.DB)
-
-	stmt, err := connection.Prepare("INSERT INTO person(name, phone) VALUES(?, ?)")
+	stmt, err := conn.Prepare("INSERT INTO person(name, phone) VALUES(?, ?)")
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
@@ -44,21 +39,14 @@ func (p *Person) Insert(obj *PersonVO) {
 
 	log.Debug("Insert result: the `id` of a new row is `%d`", lastId)
 
-	db.Close()
 }
 
 func (p *Person) FindAll(name string) {
 
-	//获取单例
-	db := (database.Instance).(*mysql.MySQL)
-
-	err := db.Connect()
-	defer common.CheckFatal(err)
-
-	connection := (db.GetConnection()).(*sql.DB)
+	conn := (p.db.GetConnection()).(*sql.DB)
 
 	var result []PersonVO
-	stmt, err := connection.Query("SELECT id, name, phone FROM person WHERE name = ?", name)
+	stmt, err := conn.Query("SELECT id, name, phone FROM person WHERE name = ?", name)
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
@@ -72,20 +60,13 @@ func (p *Person) FindAll(name string) {
 
 	log.Debug("Find result: %s", common.PrettyObject(result))
 
-	db.Close()
 }
 
 func (p *Person) UpdateAll(name string, obj *PersonVO) {
 
-	//获取单例
-	db := (database.Instance).(*mysql.MySQL)
+	conn := (p.db.GetConnection()).(*sql.DB)
 
-	err := db.Connect()
-	defer common.CheckFatal(err)
-
-	connection := (db.GetConnection()).(*sql.DB)
-
-	stmt, err := connection.Prepare("UPDATE person SET phone=? where name=?")
+	stmt, err := conn.Prepare("UPDATE person SET phone=? where name=?")
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
@@ -95,20 +76,13 @@ func (p *Person) UpdateAll(name string, obj *PersonVO) {
 
 	log.Debug("Update result: the sum of effected rows is `%d`", rowsCount)
 
-	db.Close()
 }
 
 func (p *Person) RemoveAll(name string) {
 
-	//获取单例
-	db := (database.Instance).(*mysql.MySQL)
+	conn := (p.db.GetConnection()).(*sql.DB)
 
-	err := db.Connect()
-	defer common.CheckFatal(err)
-
-	connection := (db.GetConnection()).(*sql.DB)
-
-	stmt, err := connection.Prepare("DELETE FROM person WHERE name=?")
+	stmt, err := conn.Prepare("DELETE FROM person WHERE name=?")
 	defer stmt.Close()
 	defer common.CheckFatal(err)
 
@@ -118,5 +92,13 @@ func (p *Person) RemoveAll(name string) {
 
 	log.Debug("Delete result: the sum of effected rows is `%d`", rowsCount)
 
-	db.Close()
+}
+
+func NewPerson(db *mysql.MySQL) (*Person, error) {
+
+	err := db.Connect()
+
+	return &Person{
+		db: db,
+	}, err
 }

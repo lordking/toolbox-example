@@ -28,13 +28,13 @@ func main() {
 
 	//创建一个数据库访问单例
 	mongo := mongo.New()
-	err := database.CreateInstance(mongo, *dbConfigPath)
+	err := database.Configure(mongo, *dbConfigPath)
 	defer common.CheckFatal(err)
 
 	//创建web服务
 	h := http.CreateServer(*httpConfigPath)
 
-	person, err := api.NewPerson()
+	person, err := api.NewPerson(mongo)
 	defer common.CheckError(err)
 
 	group := h.Group("/person")
