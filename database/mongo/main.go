@@ -16,7 +16,7 @@ func main() {
 	//创建一个数据库访问单例
 	mongo := mongo.New()
 	err := database.Configure(mongo, "./mongo.json")
-	defer common.CheckFatal(err)
+	common.CheckFatal(err)
 
 	form := &PersonVO{
 		Name:  "leking",
@@ -24,22 +24,22 @@ func main() {
 	}
 
 	p, err := NewPerson(mongo)
-	defer common.CheckFatal(err)
+	common.CheckFatal(err)
 
 	//插入数据
 	p.insert(form)
-	defer common.CheckFatal(err)
+	common.CheckFatal(err)
 
 	//查询数据
 	p.findAll(form.Name)
-	defer common.CheckFatal(err)
+	common.CheckFatal(err)
 
 	//更新数据
 	form.Phone = "13900001111"
 	p.updateAll(form.Name, form)
-	defer common.CheckFatal(err)
+	common.CheckFatal(err)
 
 	//删除数据
 	p.removeAll(form.Name)
-	defer common.CheckFatal(err)
+	common.CheckFatal(err)
 }
