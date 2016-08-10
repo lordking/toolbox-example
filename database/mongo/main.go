@@ -28,14 +28,18 @@ func main() {
 
 	//插入数据
 	p.insert(form)
+	defer common.CheckFatal(err)
 
 	//查询数据
 	p.findAll(form.Name)
+	defer common.CheckFatal(err)
 
 	//更新数据
 	form.Phone = "13900001111"
 	p.updateAll(form.Name, form)
+	defer common.CheckFatal(err)
 
 	//删除数据
 	p.removeAll(form.Name)
+	defer common.CheckFatal(err)
 }

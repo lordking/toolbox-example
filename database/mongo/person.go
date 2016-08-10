@@ -9,13 +9,9 @@ import (
 	"gopkg.in/mgo.v2/bson"
 )
 
-const (
-	collectionName = "person"
-)
-
 type (
 	Person struct {
-		db *mongo.Mongo
+		collection *mgo.Collection
 	}
 
 	//Person 用户数据对象
@@ -26,54 +22,52 @@ type (
 	}
 )
 
-func (p *Person) insert(obj *PersonVO) {
+func (p *Person) insert(obj *PersonVO) (err error) {
 
 	obj.Id = bson.NewObjectId()
-	collection, err := p.db.GetCollection(collectionName)
-	err = collection.Insert(obj)
-	defer common.CheckError(err)
+	err = p.collection.Insert(obj)
 
 	log.Debug("Insert result: %s", common.PrettyObject(obj))
-
+	return
 }
 
-func (p *Person) findAll(name string) {
+func (p *Person) findAll(name string) (result []PersonVO, err error) {
 
-	var result []PersonVO
-	collection, err := p.db.GetCollection(collectionName)
-	err = collection.Find(bson.M{"name": name}).All(&result)
-	defer common.CheckError(err)
+	err = p.collection.Find(bson.M{"name": name}).All(&result)
 
 	log.Debug("Find result: %s", common.PrettyObject(result))
-
+	return
 }
 
-func (p *Person) updateAll(name string, obj *PersonVO) {
+func (p *Person) updateAll(name string, obj *PersonVO) (result *mgo.ChangeInfo, err error) {
 
-	var result *mgo.ChangeInfo
-	collection, err := p.db.GetCollection(collectionName)
-	result, err = collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": obj.Phone}})
-	defer common.CheckError(err)
+	result, err = p.collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": obj.Phone}})
 
 	log.Debug("Update result: %s", common.PrettyObject(result))
-
+	return
 }
 
-func (p *Person) removeAll(name string) {
+func (p *Person) removeAll(name string) (result *mgo.ChangeInfo, err error) {
 
-	var result *mgo.ChangeInfo
-	collection, err := p.db.GetCollection(collectionName)
-	result, err = collection.RemoveAll(bson.M{"name": name})
-	defer common.CheckError(err)
+	result, err = p.collection.RemoveAll(bson.M{"name": name})
 
 	log.Debug("Remove result: %s", common.PrettyObject(result))
+	return
 }
 
-func NewPerson(db *mongo.Mongo) (*Person, error) {
+func NewPerson(db *mongo.Mongo) (p *Person, err error) {
 
-	err := db.Connect()
+	if err = db.Connect(); err != nil {
+		return
+	}
 
-	return &Person{
-		db: db,
-	}, err
+	collection, err := db.GetCollection("person")
+	if err != nil {
+		return
+	}
+
+	p = new(Person)
+	p.collection = collection
+
+	return
 }
