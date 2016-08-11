@@ -16,8 +16,8 @@ type (
 	//Person 用户数据对象
 	PersonVO struct {
 		Id    int
-		Name  string `json:"name" bson:"name"`
-		Phone string `json:"phone" bson:"phone"`
+		Name  string `json:"name"`
+		Phone string `json:"phone"`
 	}
 )
 

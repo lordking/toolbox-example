@@ -13,9 +13,9 @@ func init() {
 	log.SetLevel(log.DebugLevel)
 }
 
-type MainDelegate struct{}
+type Reveiver struct{}
 
-func (d *MainDelegate) GetPerson(obj *PersonVO) error {
+func (d *Reveiver) GetPerson(obj *PersonVO) error {
 	log.Debug("Receive a message: %s", common.PrettyObject(obj))
 
 	return nil
@@ -32,9 +32,9 @@ func main() {
 	err := database.Configure(redis, "./redis.json")
 	defer common.CheckFatal(err)
 
-	delegate := &MainDelegate{}
+	receiver := &Reveiver{}
 
-	p := NewPerson(redis, delegate)
+	p := NewPerson(redis, receiver)
 
 	//设置或新增
 	err = p.Set("leking", obj, 1000)
