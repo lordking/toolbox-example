@@ -82,7 +82,7 @@ func (p *Person) Publish(channel string, obj *PersonVO) error {
 	}
 
 	if err := p.db.PublishObject(channel, obj); err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	if err := p.db.Close(); err != nil {
@@ -100,7 +100,7 @@ func (p *Person) Subscribe(channel string) error {
 
 	psc, err := p.db.Subscribe(channel)
 	if err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	p.db.Receive(psc)

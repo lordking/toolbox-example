@@ -124,7 +124,7 @@ func NewBlog(mongo *mongo.Mongo) (*Blog, error) {
 
 	model, err := models.NewBlog(mongo)
 	if err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return nil, common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	ctrl := &Blog{

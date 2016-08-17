@@ -53,7 +53,7 @@ func NewUser(mongo *mongo.Mongo) (*User, error) {
 
 	token, err := models.NewToken(mongo)
 	if err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return nil, common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	ctrl := &User{

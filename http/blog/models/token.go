@@ -33,7 +33,7 @@ func (t *Token) Create(obj *TokenVO) error {
 
 	err := t.collection.Insert(obj)
 	if err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return nil
@@ -46,7 +46,7 @@ func (t *Token) Find(token string) (*TokenVO, error) {
 
 	err := t.collection.Find(bson.M{"_id": objId}).One(&result)
 	if err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return nil, common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return result, nil
@@ -58,7 +58,7 @@ func (t *Token) Delete(id string) error {
 
 	err := t.collection.RemoveId(objId)
 	if err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return common.NewError(common.ErrCodeInternal, err.Error())
 	}
 	return err
 }
@@ -74,7 +74,7 @@ func (t *Token) ClearExpireTokens() error {
 
 	_, err := t.collection.RemoveAll(bson.M{"expireTime": bson.M{"$lt": nowTime}})
 	if err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return err
@@ -85,12 +85,12 @@ func NewToken(db *mongo.Mongo) (*Token, error) {
 	//获取单例
 	err := db.Connect()
 	if err != nil {
-		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+		err = common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	collection, err := db.GetCollection("token")
 	if err != nil {
-		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+		err = common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return &Token{collection: collection}, err

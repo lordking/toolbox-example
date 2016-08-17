@@ -27,7 +27,7 @@ func (p *Person) Create(obj *PersonVO) error {
 
 	err := p.collection.Insert(obj)
 	if err != nil {
-		return common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return nil
@@ -40,7 +40,7 @@ func (p *Person) Find(name string) ([]PersonVO, error) {
 
 	err := p.collection.Find(bson.M{"name": name}).All(&result)
 	if err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return nil, common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return result, nil
@@ -52,7 +52,7 @@ func (p *Person) Update(name string, obj *PersonVO) (*mgo.ChangeInfo, error) {
 	//修改
 	result, err := p.collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": obj.Phone}})
 	if err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodeInternal, err)
+		return nil, common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return result, nil
@@ -64,7 +64,7 @@ func (p *Person) Delete(name string) (*mgo.ChangeInfo, error) {
 	//测试查询
 	result, err := p.collection.RemoveAll(bson.M{"name": name})
 	if err != nil {
-		return nil, common.NewErrorWithOther(common.ErrCodedParams, err)
+		return nil, common.NewError(common.ErrCodedParams, err.Error())
 	}
 
 	return result, nil
@@ -75,12 +75,12 @@ func NewPerson(db *mongo.Mongo) (*Person, error) {
 	//获取单例
 	err := db.Connect()
 	if err != nil {
-		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+		err = common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	collection, err := db.GetCollection("person")
 	if err != nil {
-		err = common.NewErrorWithOther(common.ErrCodeInternal, err)
+		err = common.NewError(common.ErrCodeInternal, err.Error())
 	}
 
 	return &Person{collection: collection}, err
