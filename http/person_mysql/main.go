@@ -28,7 +28,7 @@ func main() {
 
 	//创建一个数据库访问单例
 	mysql := mysql.New()
-	err := database.Configure(mysql, *dbConfigPath)
+	err := database.ConfigureWithPath(mysql, *dbConfigPath)
 	defer common.CheckFatal(err)
 
 	//创建web服务

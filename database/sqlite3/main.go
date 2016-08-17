@@ -15,7 +15,7 @@ func main() {
 
 	//创建一个数据库访问单例
 	sqlite := sqlite3.New()
-	err := database.Configure(sqlite, "./sqlite.json")
+	err := database.ConfigureWithPath(sqlite, "./sqlite.json")
 	defer common.CheckFatal(err)
 
 	form := &PersonVO{

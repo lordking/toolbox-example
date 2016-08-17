@@ -29,7 +29,7 @@ func main() {
 	}
 
 	redis := redis.New()
-	err := database.Configure(redis, "./redis.json")
+	err := database.ConfigureWithPath(redis, "./redis.json")
 	defer common.CheckFatal(err)
 
 	receiver := &Reveiver{}

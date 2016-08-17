@@ -15,7 +15,7 @@ func main() {
 
 	//创建一个数据库访问单例
 	mongo := mongo.New()
-	err := database.Configure(mongo, "./mongo.json")
+	err := database.ConfigureWithPath(mongo, "./mongo.json")
 	common.CheckFatal(err)
 
 	form := &PersonVO{

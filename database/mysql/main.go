@@ -17,7 +17,7 @@ func main() {
 
 	//创建一个数据库访问单例
 	mysql := mysql.New()
-	err := database.Configure(mysql, "./mysql.json")
+	err := database.ConfigureWithPath(mysql, "./mysql.json")
 	defer common.CheckFatal(err)
 
 	form := &PersonVO{
