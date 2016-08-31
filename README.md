@@ -9,19 +9,17 @@ toolbox example
 
 #### 下载golang
 
-从 https://golang.org 下载安装包，并安装。
+从 https://golang.org 下载安装包。
 
-#### 设置GOPATH
+```
+tar xzvf go1.6.1.linux-amd64.tar.gz $HOME/go
+```
 
-GOPATH路径根据各人情况设置。可以统一设置在同一个目录下，也可以为不同的项目设置不同的GOPATH
+#### 设置环境变量
 
-	$ mkdir ~/Documents/workspace/go-project
-	$ cd ~/Documents/workspace/go-project
-	$ export GOPATH=$GOPATH:~/Documents/workspace/go-project
-
-### 设置PATH
-
-  $ export PATH=$PATH:~/Documents/workspace/go-project/bin
+export GOROOT=$HOME/go
+export GOPATH=$HOME/go-project
+export PATH=$PATH:$GOROOT/bin:$GOPATH/bin
 
 ### 1.2 安装与使用Godep
 
@@ -30,17 +28,17 @@ GOPATH路径根据各人情况设置。可以统一设置在同一个目录下�
 #### 下载安装
 
 ```
-go get github.com/golang/tools
+go get github.com/tools/godep
 ```
 
 #### 项目工程要求
 
-* 把项目路径加入到GOPATH
+* 把项目路径加入到$GOPATH/src
 * 依赖的项目和项目本身都应该是个git仓库
 * 目录结构例如
 
 ```
-toolbox-example
+$GOPATH
  |-src
  |  |-github.com
  |     |-lordking
