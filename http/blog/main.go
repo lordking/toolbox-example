@@ -25,7 +25,7 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
-func authorization(c *gin.Context, username, password string) error {
+func authorize(c *gin.Context, username, password string) error {
 
 	log.Debug("auth: %s : %s", username, password)
 
@@ -69,7 +69,7 @@ func main() {
 
 	blog, err := api.NewBlog(mongo)
 	defer common.CheckFatal(err)
-	blogGroup := h.Group("/blog", http.BasicAuth(authorization))
+	blogGroup := h.Group("/blog", http.BasicAuth(authorize))
 	{
 		blogGroup.POST("/new", blog.Create)
 		blogGroup.GET("/:start/:limit", blog.Find)
