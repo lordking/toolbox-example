@@ -25,7 +25,7 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
-func authorization(username, password string) error {
+func authorization(c *gin.Context, username, password string) error {
 
 	log.Debug("auth: %s : %s", username, password)
 
