@@ -1,6 +1,7 @@
 package main
 
 import (
+	"errors"
 	"flag"
 	"fmt"
 	"time"
@@ -25,21 +26,25 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
-func authorize(c *gin.Context, typ, username, password string) error {
+func authorize(c *gin.Context, authorization string) error {
 
-	log.Debug("auth: %s : %s", username, password)
+	username, password, ok := c.Request.BasicAuth()
+	if !ok {
+		return errors.New("Not found basic authorization!")
+	}
 
-	if typ == "Basic" && username != "" {
+	if username != "" {
 
 		result, _ := token.Find(username)
 		if result != nil && result.ExpireTime > time.Now().Unix() {
 			log.Debug("%s auth ok", username)
+			log.Debug("password:%s", password)
 			return nil
 		}
 	}
 
 	str := fmt.Sprintf("%s auth failure", username)
-	return common.NewError(401, str)
+	return errors.New(str)
 }
 
 func main() {
