@@ -25,11 +25,11 @@ func init() {
 	gin.SetMode(gin.ReleaseMode)
 }
 
-func authorize(c *gin.Context, username, password string) error {
+func authorize(c *gin.Context, typ, username, password string) error {
 
 	log.Debug("auth: %s : %s", username, password)
 
-	if username != "" {
+	if typ == "Basic" && username != "" {
 
 		result, _ := token.Find(username)
 		if result != nil && result.ExpireTime > time.Now().Unix() {
