@@ -1,5 +1,0 @@
-{
-    "level": "debug",
-    "file": "log/server.log",
-    "production": false
-}

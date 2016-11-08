@@ -1,12 +1,31 @@
 package main
 
 import (
+	"fmt"
+
 	"github.com/lordking/toolbox/common"
 	"github.com/lordking/toolbox/log"
+	"github.com/spf13/viper"
 )
 
 func init() {
-	log.SetLogDefaults("./log.json")
+	initConfig()
+	log.SetLogDefaults("log")
+}
+
+// initConfig reads in config file and ENV variables if set.
+func initConfig() {
+
+	viper.SetConfigName("config")
+	viper.AddConfigPath(".")
+	viper.AutomaticEnv()
+
+	// If a config file is found, read it in.
+	if err := viper.ReadInConfig(); err == nil {
+		fmt.Println("Using config file:", viper.ConfigFileUsed())
+	} else {
+		fmt.Println("Read config file error: ", err)
+	}
 }
 
 func main() {
