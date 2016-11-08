@@ -1,16 +1,22 @@
 {
-	"ImportPath": "github.com/lordking/toolbox-example/log",
-	"GoVersion": "go1.6",
+	"ImportPath": "github.com/lordking/toolbox-example.bk/log",
+	"GoVersion": "go1.7",
 	"GodepVersion": "v74",
 	"Deps": [
 		{
 			"ImportPath": "github.com/Sirupsen/logrus",
-			"Comment": "v0.10.0-21-g32055c3",
-			"Rev": "32055c351ea8b00b96d70f28db48d9840feaf0ec"
+			"Comment": "v0.10.0-38-g3ec0642",
+			"Rev": "3ec0642a7fb6488f65b06f9040adc67e3990296a"
+		},
+		{
+			"ImportPath": "github.com/lordking/toolbox/common",
+			"Comment": "1.0-22-g10a76e6",
+			"Rev": "10a76e65bcb237785253c05272a35c14286fb88b"
 		},
 		{
 			"ImportPath": "github.com/lordking/toolbox/log",
-			"Rev": "6b415f8b60b60279e3a7daae23916c17d07d7952"
+			"Comment": "1.0-22-g10a76e6",
+			"Rev": "10a76e65bcb237785253c05272a35c14286fb88b"
 		},
 		{
 			"ImportPath": "golang.org/x/sys/unix",
