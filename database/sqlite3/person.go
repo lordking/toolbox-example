@@ -33,7 +33,7 @@ func (p *Person) Insert(obj *PersonVO) {
 	lastId, err := result.LastInsertId()
 	defer common.CheckFatal(err)
 
-	log.Debug("Insert result: the `id` of a new row is `%d`", lastId)
+	log.Debugf("Insert result: the `id` of a new row is `%d`", lastId)
 
 }
 
@@ -54,7 +54,7 @@ func (p *Person) FindAll(name string) {
 		result = append(result, obj)
 	}
 
-	log.Debug("Find result: %s", common.PrettyObject(result))
+	log.Debugf("Find result: %s", common.PrettyObject(result))
 
 }
 
@@ -70,7 +70,7 @@ func (p *Person) UpdateAll(name string, obj *PersonVO) {
 	rowsCount, err := result.RowsAffected()
 	defer common.CheckFatal(err)
 
-	log.Debug("Update result: the sum of effected rows is `%d`", rowsCount)
+	log.Debugf("Update result: the sum of effected rows is `%d`", rowsCount)
 
 }
 
@@ -86,7 +86,7 @@ func (p *Person) RemoveAll(name string) {
 	rowsCount, err := result.RowsAffected()
 	defer common.CheckFatal(err)
 
-	log.Debug("Delete result: the sum of effected rows is `%d`", rowsCount)
+	log.Debugf("Delete result: the sum of effected rows is `%d`", rowsCount)
 
 }
 

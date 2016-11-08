@@ -1,16 +1,26 @@
 mysql
 =======
 
-## 安装依赖
+使用MySQL数据库实现的简单的增、删除、修改、查询例子。
+
+## 运行前准备
+
+* 需安装MySQL或者MariaDB数据库。
+* mysql.json，数据库配置文件。
+* log.json，日志配置文件。
+
+## 恢复依赖库
 
 ```
 godep restore
 ```
 
-## 配置数据库
+## 创建样例数据库和表。
 
 ```sql
-CREATE DATABASE `sample`
+CREATE DATABASE `sample`;
+
+USE sample
 
 CREATE TABLE `person` (
   `name` varchar(255) NOT NULL,

@@ -10,7 +10,7 @@ import (
 )
 
 func init() {
-	log.SetLevel(log.DebugLevel)
+	log.SetLogDefaults("./log.json")
 }
 
 func main() {

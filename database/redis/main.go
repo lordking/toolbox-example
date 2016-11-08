@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"time"
 
 	"github.com/lordking/toolbox/common"
@@ -10,13 +11,13 @@ import (
 )
 
 func init() {
-	log.SetLevel(log.DebugLevel)
+	log.SetLogDefaults("./log.json")
 }
 
 type Reveiver struct{}
 
 func (d *Reveiver) GetPerson(obj *PersonVO) error {
-	log.Debug("Receive a message: %s", common.PrettyObject(obj))
+	log.Debugf("Receive a message: %s", common.PrettyObject(obj))
 
 	return nil
 }
@@ -39,12 +40,12 @@ func main() {
 	//设置或新增
 	err = p.Set("leking", obj, 1000)
 	defer common.CheckFatal(err)
-	log.Debug("set a person: %s", common.PrettyObject(obj))
+	log.Debugf("set a person: %s", common.PrettyObject(obj))
 
 	//获取
 	obj, err = p.Get("leking")
 	defer common.CheckFatal(err)
-	log.Debug("get a person: %s", common.PrettyObject(obj))
+	log.Debugf("get a person: %s", common.PrettyObject(obj))
 
 	// //删除
 	err = p.Delete("leking")
@@ -58,9 +59,10 @@ func main() {
 
 	//发布
 	for {
+		obj.Phone = fmt.Sprintf("18%d", common.RandInt64(900000000, 999999999))
+		log.Debugf("publish a `person`: %s", common.PrettyObject(obj))
 		err = p.Publish("person", obj)
 		defer common.CheckFatal(err)
-		log.Debug("publish a `person`: %v", obj)
 		time.Sleep(1e9)
 	}
 

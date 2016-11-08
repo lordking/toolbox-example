@@ -27,7 +27,7 @@ func (p *Person) insert(obj *PersonVO) (err error) {
 	obj.Id = bson.NewObjectId()
 	err = p.collection.Insert(obj)
 
-	log.Debug("Insert result: %s", common.PrettyObject(obj))
+	log.Debugf("Insert result: %s", common.PrettyObject(obj))
 	return
 }
 
@@ -35,7 +35,7 @@ func (p *Person) findAll(name string) (result []PersonVO, err error) {
 
 	err = p.collection.Find(bson.M{"name": name}).All(&result)
 
-	log.Debug("Find result: %s", common.PrettyObject(result))
+	log.Debugf("Find result: %s", common.PrettyObject(result))
 	return
 }
 
@@ -43,7 +43,7 @@ func (p *Person) updateAll(name string, obj *PersonVO) (result *mgo.ChangeInfo, 
 
 	result, err = p.collection.UpdateAll(bson.M{"name": name}, bson.M{"$set": bson.M{"phone": obj.Phone}})
 
-	log.Debug("Update result: %s", common.PrettyObject(result))
+	log.Debugf("Update result: %s", common.PrettyObject(result))
 	return
 }
 
@@ -51,7 +51,7 @@ func (p *Person) removeAll(name string) (result *mgo.ChangeInfo, err error) {
 
 	result, err = p.collection.RemoveAll(bson.M{"name": name})
 
-	log.Debug("Remove result: %s", common.PrettyObject(result))
+	log.Debugf("Remove result: %s", common.PrettyObject(result))
 	return
 }
 
