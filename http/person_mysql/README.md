@@ -29,7 +29,7 @@ ssl_cert和ssl_key的生成方式是：
   $ go run $GOROOT/src/crypto/tls/generate_cert.go --host="localhost"
 ```
 
-#### `database`配置说明
+### `database`配置说明
 
 参数          | 说明
 ------------ | ------------------

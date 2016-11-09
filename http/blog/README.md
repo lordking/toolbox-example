@@ -2,7 +2,9 @@
 
 blog样例，是mongodb + restapi + webapp的样例。
 
-## 1. 安装说明
+## 1 编译运行前准备
+
+## 1.1  安装js库
 
 运行之前，除go语言环境外先要安装js库。步骤如下：
 
@@ -18,50 +20,59 @@ blog样例，是mongodb + restapi + webapp的样例。
 
   $ cd blog $ bower install
 
-## 2 配置说明
+## 1.2 配置说明
 
-所有配置文件均放置在config目录下，内容以JSON格式存放。
+所有配置文件均放置在config目录下，内容以YAML格式存放。
 
 ```
   +- config
       |
-      |---- http.json
-      +---- mongo.json
+      +---- config.yaml
 ```
 
-### 2.1 HTTP配置文件: http.json
+###  `http`配置说明
 
-参数      | 说明
--------- | ------------------
-http     | HTTP端口。
-https    | HTTPS端口，不能与HTTP相同。
-ssl_cert | HTTPS需要的证书文件的相对路径。
-ssl_key  | HTTPS需要的公钥文件的相对路径。
-
+参数     | 说明
+------- | ------------------
+http    | HTTP端口。
+sslport | HTTPS端口，不能与HTTP相同。
+sslcert | HTTPS需要的证书文件的相对路径。
+sslkey  | HTTPS需要的公钥文件的相对路径。
 ssl_cert和ssl_key的生成方式是：
 
 ```bash
   $ go run $GOROOT/src/crypto/tls/generate_cert.go --host="localhost"
 ```
 
-### 2.2 DB配置文件: mongo.json
+### `database`配置说明
 
-```json
-  {
-      "url": "127.0.0.1",
-      "database": "sample"
-  }
-```
+参数      | 说明
+-------- | ------------------
+url      | 数据库URL连接字符串
+database | 数据库名
 
 连接字符串的格式是
 
 `[mongodb://][user:pass@]host1[:port1][,host2[:port2],...][/database][?options]`
 
-## 3 编译运行
+
+## 1.3 恢复依赖库
+
+```
+godep restore
+```
+
+## 2 编译运行
 
 ```bash
   $ godep go build
-  $ ./blog
+  $ ./blog serve
+```
+
+或者
+
+```
+  $ godep go run main.go serve
 ```
 
 成功后，可访问如下地址:
@@ -70,9 +81,9 @@ ssl_cert和ssl_key的生成方式是：
 
 用户名/密码: admin/admin
 
-## 4 单元测试
+## 3 单元测试
 
-### 4.1 用户登录接口测试
+### 3.1 用户登录接口测试
 
 ```bash
   $ cd test
@@ -85,19 +96,19 @@ ssl_cert和ssl_key的生成方式是：
   token = "57884dba17a06faba180e46a"
 ```
 
-#### 4.2 创建日志
+#### 3.2 创建日志
 
 ```
   $ go test -v -test.run TestCreate
 ```
 
-#### 4.3 查询日志
+#### 3.3 查询日志
 
 ```bash
   $ go test -v -test.run TestFind
 ```
 
-#### 4.4 修改日志
+#### 3.4 修改日志
 
 在运行测试之前，先通过之前创建或者查询的测试用例获取一个id。然后打开test.go文件，修改update_id的值。如：
 
@@ -111,7 +122,7 @@ ssl_cert和ssl_key的生成方式是：
   $ go test -v -test.run TestUpdate
 ```
 
-#### 4.5 删除日志
+#### 3.5 删除日志
 
 在运行测试之前，先通过之前创建或者查询的测试用例获取一个id。然后打开test.go文件，找到delete_id的值。如：
 
