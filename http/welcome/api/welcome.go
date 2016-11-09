@@ -23,7 +23,7 @@ func (w *Welcome) Hello(c *gin.Context) {
 
 	var form WelcomeForm
 	if c.BindJSON(&form) == nil {
-		log.Debug("Request: %s", common.PrettyObject(form))
+		log.Debugf("Request: %s", common.PrettyObject(form))
 
 		http.JSONResponse(c, 200, gin.H{"hello": form.Name, "extra": form.Content})
 	} else {

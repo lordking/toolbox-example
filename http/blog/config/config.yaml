@@ -8,3 +8,7 @@ http:
   sslcert: ./config/cert.pem
   sslkey: ./config/key.pem
   production: true
+
+database:
+  url: 127.0.0.1
+  database: sample

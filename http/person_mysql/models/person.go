@@ -23,6 +23,9 @@ type (
 func (p *Person) Create(obj *PersonVO) error {
 
 	conn := (p.db.GetConnection()).(*sql.DB)
+	if conn == nil {
+		return common.NewError(common.ErrCodeInternal, "Database not connected!")
+	}
 
 	stmt, err := conn.Prepare("INSERT INTO person(name, phone) VALUES(?, ?)")
 	defer stmt.Close()

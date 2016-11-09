@@ -11,10 +11,10 @@ welcome样例，是一个restapi的样例。
 ```
   +- config
       |
-      +---- http.yaml
+      +---- config.yaml
 ```
 
-###  HTTP配置文件说明: http.json
+###  配置文件HTTP说明
 
 参数     | 说明
 ------- | ------------------
@@ -40,12 +40,12 @@ godep restore
 编译
 ```
   $ godep go build
-  $ ./welcome
+  $ ./welcome serve
 ```
 
 直接运行
 ```
-  $ godep go run main.go
+  $ godep go run main.go serve
 ```
 
 ## 3 单元测试

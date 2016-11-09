@@ -37,15 +37,15 @@ func (t *TestCase) RequestCreate() {
 
 				data := []byte(str)
 				b, _ := common.PrettyJSON(data)
-				log.Debug("Request: %s", b)
+				log.Debugf("Request: %s", b)
 
 				result, err := http.RequestJSON("POST", url, data)
 				if err != nil {
-					log.Error("Error: %s", err.Error())
+					log.Errorf("Error: %s", err.Error())
 				}
 
 				s, _ := common.PrettyJSON(result)
-				log.Debug("Response: %s", s)
+				log.Debugf("Response: %s", s)
 
 			}(k)
 

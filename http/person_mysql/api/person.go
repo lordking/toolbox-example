@@ -120,7 +120,7 @@ func NewPerson(db *mysql.MySQL) (*Person, error) {
 
 	model, err := models.NewPerson(db)
 	if err != nil {
-		return nil, common.NewError(common.ErrCodeInternal, err.Error())
+		return nil, err
 	}
 
 	ctrl := &Person{

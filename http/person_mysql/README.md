@@ -2,29 +2,26 @@
 
 welcome样例，是一个restapi的样例。
 
-## 1. 安装说明
+## 1 编译运行前准备
 
-运行之前，先安装GO语言环境
+## 1.1 配置说明
 
-
-## 2 配置说明
-
-所有配置文件均放置在config目录下，内容以JSON格式存放。
+所有配置文件均放置在config目录下，内容以YAML格式存放。
 
 ```
   +- config
       |
-      +---- http.json
+      +---- config.yaml
 ```
 
-### 2.1 HTTP配置文件: http.json
+###  `http`配置说明
 
-参数      | 说明
--------- | ------------------
-http     | HTTP端口。
-https    | HTTPS端口，不能与HTTP相同。
-ssl_cert | HTTPS需要的证书文件的相对路径。
-ssl_key  | HTTPS需要的公钥文件的相对路径。
+参数     | 说明
+------- | ------------------
+http    | HTTP端口。
+sslport | HTTPS端口，不能与HTTP相同。
+sslcert | HTTPS需要的证书文件的相对路径。
+sslkey  | HTTPS需要的公钥文件的相对路径。
 
 ssl_cert和ssl_key的生成方式是：
 
@@ -32,25 +29,29 @@ ssl_cert和ssl_key的生成方式是：
   $ go run $GOROOT/src/crypto/tls/generate_cert.go --host="localhost"
 ```
 
-### 2.2 DB配置文件: mysql.json
+#### `database`配置说明
 
-```json
-{
-	"adapter": "mysql",
-	"host": "127.0.0.1",
-	"port":"3306",
-	"username":"root",
-	"password":"",
-    "MaxOpenConns":200,
-    "MaxIdleConns":100,
-	"database": "sample"
-}
+参数          | 说明
+------------ | ------------------
+host         | 数据库主机地址
+port         | 数据库端口
+username     | 用户名
+password     | 密码
+MaxOpenConns | 最多可开连接
+MaxIdleConns | 最多空闲连接
+database     | 数据库名
+
+
+## 1.2 恢复依赖库
+
+```
+godep restore
 ```
 
-### 2.3 数据库建表
+### 1.3 数据库建表
 
 ```sql
-CREATE DATABASE `sample`
+CREATE DATABASE `sample`;
 
 CREATE TABLE `person` (
   `name` varchar(255) NOT NULL,
@@ -61,17 +62,17 @@ CREATE TABLE `person` (
 ```
 
 
-## 3 编译运行
+## 2 编译运行
 
 ```
   $ godep go build
-  $ ./person_mysql
+  $ ./person_mysql serve
 ```
 
 或者
 
 ```
-  $ godep go run main.go
+  $ godep go run main.go serve
 ```
 
 ## 4 测试
