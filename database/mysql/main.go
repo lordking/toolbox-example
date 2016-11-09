@@ -1,42 +1,32 @@
 package main
 
 import (
-	"fmt"
+	"flag"
 
 	"github.com/lordking/toolbox/common"
 	"github.com/lordking/toolbox/database"
 	"github.com/lordking/toolbox/database/mysql"
 	"github.com/lordking/toolbox/log"
-	"github.com/spf13/viper"
 
 	_ "github.com/go-sql-driver/mysql"
 )
 
+var (
+	cfgFile string
+)
+
 func init() {
-	initConfig()
-	log.SetLogDefaults("log")
-}
-
-// initConfig reads in config file and ENV variables if set.
-func initConfig() {
-
-	viper.SetConfigName("config")
-	viper.AddConfigPath(".")
-	viper.AutomaticEnv()
-
-	// If a config file is found, read it in.
-	if err := viper.ReadInConfig(); err == nil {
-		fmt.Println("Using config file:", viper.ConfigFileUsed())
-	} else {
-		fmt.Println("Read config file error: ", err)
-	}
+	flag.StringVar(&cfgFile, "config", "", "config file.")
 }
 
 func main() {
 
+	common.InitConfig("mysql_exmple", cfgFile)
+	log.SetLogDefaults("log")
+
 	//创建一个数据库访问单例
 	mysql := mysql.New()
-	err := database.ConfigureCfgKey(mysql, "database")
+	err := database.Configure("database", mysql)
 	defer common.CheckFatal(err)
 
 	form := &PersonVO{

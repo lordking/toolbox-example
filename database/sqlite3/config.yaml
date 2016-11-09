@@ -2,5 +2,5 @@ log:
   level: "debug"
   production: false
 
-database:
+sqlite:
   file: "./person.db"

@@ -6,20 +6,28 @@ import (
 	"time"
 
 	"github.com/lordking/toolbox-example/http/welcome/benchmark/testcase"
+	"github.com/lordking/toolbox/common"
 	"github.com/lordking/toolbox/log"
 )
 
+var (
+	cfgFile string
+)
+
 func init() {
-	log.SetLevel(log.DebugLevel)
+	flag.StringVar(&cfgFile, "config", "", "config file.")
 }
 
 func main() {
+
+	common.InitConfig("welcome", cfgFile)
+	log.SetLogDefaults("log")
 
 	methodName := flag.String("m", "", "test case name")
 	flag.Parse()
 
 	if *methodName == "" {
-		log.Fatal("Not found testcase!")
+		log.Fatalf("Not found testcase!")
 	}
 
 	s := &testcase.TestCase{}
