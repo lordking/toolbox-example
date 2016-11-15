@@ -6,8 +6,7 @@ mongodb
 ## 运行前准备
 
 * 需安装MongoDb数据库。
-* mongo.json，数据库配置文件。
-* log.json，日志配置文件。
+* `config.yaml`，配置文件，配置数据库、日志。
 
 ## 恢复依赖库
 

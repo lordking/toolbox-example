@@ -22,7 +22,7 @@ brew install sqlite3
 
 ### 数据库文件
 
-本例person.db已经创建完毕，可以直接使用。如果需要创建，按此下SQL脚本。
+本例`person.db`已经创建完毕，可以直接使用。如果需要创建，按此下SQL脚本。
 
 ```sql
 CREATE TABLE "person" (
@@ -31,6 +31,10 @@ CREATE TABLE "person" (
   "phone" TEXT
 )
 ```
+
+### 配置文件
+
+`config.yaml`，配置文件，配置数据库、日志。
 
 ## 运行样例
 
