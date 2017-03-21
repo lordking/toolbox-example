@@ -1,0 +1,4 @@
+database-mango: database/mongo
+database-mysql: database/mysql
+database-redis: database/redis
+database-sqlite3: database/sqlite3
